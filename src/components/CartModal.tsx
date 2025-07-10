@@ -37,6 +37,14 @@ const CartModal = () => {
     }
   };
 
+  const calculateSubtotal = () => {
+    return cart.lineItems?.reduce((total, item) => {
+      const itemPrice = Number(item.price?.amount) || 0;
+      const itemQuantity = Number(item.quantity) || 1;
+      return total + (itemPrice * itemQuantity);
+    }, 0) || 0;
+  };
+
   return (
     <div className="w-max absolute p-4 rounded-md shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white top-12 right-0 flex flex-col gap-6 z-20">
       {!cart.lineItems ? (
@@ -104,7 +112,7 @@ const CartModal = () => {
           <div className="">
             <div className="flex items-center justify-between font-semibold">
               <span className="">Subtotal</span>
-              <span className="">₹{cart.subtotal.amount}</span>
+              <span className="">₹{calculateSubtotal()}</span>
             </div>
             <p className="text-gray-500 text-sm mt-2 mb-4">
               Shipping and taxes calculated at checkout.
