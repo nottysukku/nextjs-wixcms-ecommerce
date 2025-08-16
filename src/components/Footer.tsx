@@ -18,11 +18,21 @@ const Footer = () => {
           <span className="font-semibold text-secondary-700 dark:text-secondary-300">sukritchopra2003@gmail.com</span>
           <span className="font-semibold text-secondary-700 dark:text-secondary-300">+91 9560760057</span>
           <div className="flex gap-6">
-            <Image src="/facebook.png" alt="" width={16} height={16} className="opacity-70 hover:opacity-100 transition-opacity" />
-            <Image src="/instagram.png" alt="" width={16} height={16} className="opacity-70 hover:opacity-100 transition-opacity" />
-            <Image src="/youtube.png" alt="" width={16} height={16} className="opacity-70 hover:opacity-100 transition-opacity" />
-            <Image src="/pinterest.png" alt="" width={16} height={16} className="opacity-70 hover:opacity-100 transition-opacity" />
-            <Image src="/x.png" alt="" width={16} height={16} className="opacity-70 hover:opacity-100 transition-opacity" />
+            <Link href="/about" className="hover:scale-110 transition-transform">
+              <Image src="/facebook.png" alt="Facebook" width={16} height={16} className="opacity-70 hover:opacity-100 transition-opacity" />
+            </Link>
+            <Link href="/about" className="hover:scale-110 transition-transform">
+              <Image src="/instagram.png" alt="Instagram" width={16} height={16} className="opacity-70 hover:opacity-100 transition-opacity" />
+            </Link>
+            <Link href="/about" className="hover:scale-110 transition-transform">
+              <Image src="/youtube.png" alt="YouTube" width={16} height={16} className="opacity-70 hover:opacity-100 transition-opacity" />
+            </Link>
+            <Link href="/about" className="hover:scale-110 transition-transform">
+              <Image src="/pinterest.png" alt="Pinterest" width={16} height={16} className="opacity-70 hover:opacity-100 transition-opacity" />
+            </Link>
+            <Link href="/about" className="hover:scale-110 transition-transform">
+              <Image src="/x.png" alt="X (Twitter)" width={16} height={16} className="opacity-70 hover:opacity-100 transition-opacity" />
+            </Link>
           </div>
         </div>
         {/* CENTER */}
@@ -30,31 +40,31 @@ const Footer = () => {
           <div className="flex flex-col justify-between">
             <h1 className="font-medium text-lg text-secondary-800 dark:text-secondary-200">COMPANY</h1>
             <div className="flex flex-col gap-6">
-              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">About Us</Link>
-              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Careers</Link>
-              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Affiliates</Link>
-              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Blog</Link>
-              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Contact Us</Link>
+              <Link href="/about" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">About Us</Link>
+              <Link href="/about" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Careers</Link>
+              <Link href="/about" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Affiliates</Link>
+              <Link href="/about" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Blog</Link>
+              <Link href="/contact" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Contact Us</Link>
             </div>
           </div>
           <div className="flex flex-col justify-between">
             <h1 className="font-medium text-lg text-secondary-800 dark:text-secondary-200">SHOP</h1>
             <div className="flex flex-col gap-6">
-              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">New Arrivals</Link>
-              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Accessories</Link>
-              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Men</Link>
-              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Women</Link>
-              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">All Products</Link>
+              <Link href="/shop?sort=asc lastUpdated" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">New Arrivals</Link>
+              <Link href="/shop?name=accessories" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Accessories</Link>
+              <Link href="/shop?name=men" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Men</Link>
+              <Link href="/shop?name=women" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Women</Link>
+              <Link href="/shop" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">All Products</Link>
             </div>
           </div>
           <div className="flex flex-col justify-between">
             <h1 className="font-medium text-lg text-secondary-800 dark:text-secondary-200">HELP</h1>
             <div className="flex flex-col gap-6">
-              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Customer Service</Link>
-              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">My Account</Link>
-              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Find a Store</Link>
-              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Legal & Privacy</Link>
-              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Gift Card</Link>
+              <Link href="/contact" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Customer Service</Link>
+              <Link href="/profile" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">My Account</Link>
+              <Link href="/contact" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Find a Store</Link>
+              <Link href="/about" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Legal & Privacy</Link>
+              <Link href="/deals" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Gift Card</Link>
             </div>
           </div>
         </div>
@@ -75,11 +85,11 @@ const Footer = () => {
           </div>
           <span className="font-semibold text-secondary-700 dark:text-secondary-300">Secure Payments</span>
           <div className="flex justify-between">
-            <Image src="/discover.png" alt="" width={40} height={20} className="opacity-70 hover:opacity-100 transition-opacity" />
-            <Image src="/skrill.png" alt="" width={40} height={20} className="opacity-70 hover:opacity-100 transition-opacity" />
-            <Image src="/paypal.png" alt="" width={40} height={20} className="opacity-70 hover:opacity-100 transition-opacity" />
-            <Image src="/mastercard.png" alt="" width={40} height={20} className="opacity-70 hover:opacity-100 transition-opacity" />
-            <Image src="/visa.png" alt="" width={40} height={20} className="opacity-70 hover:opacity-100 transition-opacity" />
+            <Image src="/discover.png" alt="Discover Card" width={40} height={20} className="opacity-70 hover:opacity-100 transition-opacity cursor-pointer" />
+            <Image src="/skrill.png" alt="Skrill" width={40} height={20} className="opacity-70 hover:opacity-100 transition-opacity cursor-pointer" />
+            <Image src="/paypal.png" alt="PayPal" width={40} height={20} className="opacity-70 hover:opacity-100 transition-opacity cursor-pointer" />
+            <Image src="/mastercard.png" alt="Mastercard" width={40} height={20} className="opacity-70 hover:opacity-100 transition-opacity cursor-pointer" />
+            <Image src="/visa.png" alt="Visa" width={40} height={20} className="opacity-70 hover:opacity-100 transition-opacity cursor-pointer" />
           </div>
         </div>
       </div>
