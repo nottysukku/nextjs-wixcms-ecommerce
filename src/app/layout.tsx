@@ -34,7 +34,9 @@ export default function RootLayout({
         <ThemeProvider>
           <WixClientContextProvider>
             <Navbar />
-            {children}
+            <div className="pt-20">
+              {children}
+            </div>
             <Footer />
           </WixClientContextProvider>
         </ThemeProvider>

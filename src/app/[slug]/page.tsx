@@ -20,6 +20,22 @@ const SinglePage = async ({ params }: { params: { slug: string } }) => {
 
   const product = products.items[0];
 
+  // Debug: Log the product stock information
+  console.log("Product stock info:", {
+    productId: product._id,
+    stock: product.stock,
+    manageVariants: product.manageVariants,
+    productOptions: product.productOptions?.map(opt => ({
+      name: opt.name,
+      choices: opt.choices?.map(choice => choice.description)
+    })),
+    variants: product.variants?.map(v => ({
+      id: v._id,
+      choices: v.choices,
+      stock: v.stock
+    }))
+  });
+
   return (
     <div className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 relative flex flex-col lg:flex-row gap-16">
       {/* IMG */}
@@ -44,7 +60,7 @@ const SinglePage = async ({ params }: { params: { slug: string } }) => {
           </div>
         )}
         <div className="h-[2px] bg-gray-100" />
-        {product.variants && product.productOptions ? (
+        {product.variants && product.productOptions && product.productOptions.length > 0 ? (
           <CustomizeProducts
             productId={product._id!}
             variants={product.variants}
@@ -54,7 +70,14 @@ const SinglePage = async ({ params }: { params: { slug: string } }) => {
           <Add
             productId={product._id!}
             variantId="00000000-0000-0000-0000-000000000000"
-            stockNumber={product.stock?.quantity || 0}
+            stockNumber={
+              // If tracking inventory and has quantity, use it
+              product.stock?.quantity ?? 
+              // If not tracking inventory but is in stock, assume unlimited (999)
+              (product.stock?.inStock ? 999 : 
+              // If explicitly out of stock, set to 0
+              0)
+            }
           />
         )}
         <div className="h-[2px] bg-gray-100" />

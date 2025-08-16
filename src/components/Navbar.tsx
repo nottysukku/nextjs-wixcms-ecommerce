@@ -1,8 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import Menu from "./Menu";
 import Image from "next/image";
 import SearchBar from "./SearchBar";
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 
 // Dynamically import components that use client-side hooks
 const NavIcons = dynamic(() => import("./NavIcons"), { ssr: false });
@@ -16,8 +19,35 @@ const ThemeToggle = dynamic(() => import('./ThemeToggle'), {
 });
 
 const Navbar = () => {
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY === 0) {
+        // At the top of the page, always show navbar
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // Scrolling down and past 100px, hide navbar
+        setIsVisible(false);
+      } else if (currentScrollY < lastScrollY) {
+        // Scrolling up, show navbar
+        setIsVisible(true);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
+
   return (
-    <div className="h-20 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 relative bg-white dark:bg-secondary-900 border-b border-secondary-200 dark:border-secondary-700 transition-colors duration-300">
+    <div className={`fixed top-0 left-0 right-0 z-50 h-20 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 bg-white dark:bg-secondary-900 border-b border-secondary-200 dark:border-secondary-700 transition-all duration-300 ${
+      isVisible ? 'transform translate-y-0' : 'transform -translate-y-full'
+    }`}>
       {/* MOBILE */}
       <div className="h-full flex items-center justify-between md:hidden">
         <Link href="/">

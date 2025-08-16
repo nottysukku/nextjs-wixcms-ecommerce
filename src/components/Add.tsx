@@ -22,7 +22,7 @@ const Add = ({
     if (type === "d" && quantity > 1) {
       setQuantity((prev) => prev - 1);
     }
-    if (type === "i" && quantity < stockNumber) {
+    if (type === "i" && (stockNumber >= 999 ? quantity < 99 : quantity < stockNumber)) {
       setQuantity((prev) => prev + 1);
     }
   };
@@ -38,23 +38,28 @@ const Add = ({
         <div className="flex items-center gap-4">
           <div className="bg-gray-100 py-2 px-4 rounded-3xl flex items-center justify-between w-32">
             <button
-              className="cursor-pointer text-xl disabled:cursor-not-allowed disabled:opacity-20"
+              className="cursor-pointer text-xl disabled:cursor-not-allowed disabled:opacity-20 text-black"
               onClick={() => handleQuantity("d")}
               disabled={quantity===1}
             >
               -
             </button>
-            {quantity}
+            <span className="text-black">{quantity}</span>
             <button
-              className="cursor-pointer text-xl disabled:cursor-not-allowed disabled:opacity-20"
+              className="cursor-pointer text-xl disabled:cursor-not-allowed disabled:opacity-20 text-black"
               onClick={() => handleQuantity("i")}
-              disabled={quantity===stockNumber}
+              disabled={stockNumber >= 999 ? quantity >= 99 : quantity >= stockNumber}
             >
               +
             </button>
           </div>
           {stockNumber < 1 ? (
             <div className="text-xs">Product is out of stock</div>
+          ) : stockNumber >= 999 ? (
+            <div className="text-xs">
+              <span className="text-green-500">In Stock</span>{" "}
+              <br /> Available for purchase
+            </div>
           ) : (
             <div className="text-xs">
               Only <span className="text-orange-500">{stockNumber} items</span>{" "}
@@ -66,7 +71,7 @@ const Add = ({
         <button
           onClick={() => addItem(wixClient, productId, variantId, quantity)}
           disabled={isLoading}
-          className="w-36 text-sm rounded-3xl ring-1 ring-sukku text-sukku py-2 px-4 hover:bg-sukku hover:text-white disabled:cursor-not-allowed disabled:bg-pink-200 disabled:ring-0 disabled:text-white disabled:ring-none"
+          className="w-36 text-sm rounded-3xl ring-1 ring-sukku text-black bg-white hover:bg-sukku hover:text-white disabled:cursor-not-allowed disabled:bg-pink-200 disabled:ring-0 disabled:text-white transition-colors duration-200"
         >
           Add to Cart
         </button>
