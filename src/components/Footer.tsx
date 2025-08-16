@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import Copyright from "./Copyright";
 
 const Footer = () => {
   return (
@@ -84,7 +85,7 @@ const Footer = () => {
       </div>
       {/* BOTTOM */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-8 mt-16">
-        <div className="">© <script>document.write(new Date().getFullYear())</script> SUKKU Shop</div>
+        <Copyright />
         <div className="flex flex-col gap-8 md:flex-row">
           <div className="">
             <span className="text-gray-500 mr-4">Language</span>

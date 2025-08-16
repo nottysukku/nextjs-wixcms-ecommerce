@@ -164,7 +164,7 @@ A modern, full-featured e-commerce web application built with Next.js 14 and Wix
     ├── middleware.ts         # Next.js middleware
     │
     ├── app/                  # Next.js App Router
-    │   ├── favicon.ico       # Favicon
+    │   ├── favicon1.jpg      # Custom favicon
     │   ├── globals.css       # Global styles
     │   ├── layout.tsx        # Root layout
     │   ├── page.tsx          # Homepage

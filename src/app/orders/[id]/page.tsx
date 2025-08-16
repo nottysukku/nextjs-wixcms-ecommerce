@@ -2,6 +2,9 @@ import { wixClientServer } from "@/lib/wixClientServer";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic';
+
 const OrderPage = async ({ params }: { params: { id: string } }) => {
   const id = params.id;
 
