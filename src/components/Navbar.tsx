@@ -38,10 +38,10 @@ const Navbar = () => {
           </Link>
           <div className="hidden xl:flex gap-4">
             <Link href="/" className="text-secondary-700 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Homepage</Link>
-            <Link href="/" className="text-secondary-700 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Shop</Link>
-            <Link href="/" className="text-secondary-700 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Deals</Link>
-            <Link href="/" className="text-secondary-700 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">About</Link>
-            <Link href="/" className="text-secondary-700 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Contact</Link>
+            <Link href="/shop" className="text-secondary-700 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Shop</Link>
+            <Link href="/deals" className="text-secondary-700 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Deals</Link>
+            <Link href="/about" className="text-secondary-700 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">About</Link>
+            <Link href="/contact" className="text-secondary-700 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Contact</Link>
           </div>
         </div>
         {/* RIGHT */}
