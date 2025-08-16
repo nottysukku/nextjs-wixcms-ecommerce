@@ -17,12 +17,12 @@ const Filter = () => {
   };
 
   return (
-    <div className="mt-12 flex justify-between">
-      <div className="flex gap-6 flex-wrap">
+    <div className="mt-12 flex justify-between flex-wrap gap-4">
+      <div className="flex gap-4 flex-wrap">
         <select
           name="type"
           id=""
-          className="py-2 px-4 rounded-2xl text-xs font-medium bg-[#EBEDED]"
+          className="py-2 px-4 rounded-lg text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 focus:border-primary-500 focus:outline-none transition-colors"
           onChange={handleFilterChange}
         >
           <option>Type</option>
@@ -32,21 +32,21 @@ const Filter = () => {
         <input
           type="text"
           name="min"
-          placeholder="min price"
-          className="text-xs rounded-2xl pl-2 w-24 ring-1 ring-gray-400"
+          placeholder="Min price"
+          className="text-sm rounded-lg px-3 py-2 w-28 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:border-primary-500 focus:outline-none transition-colors"
           onChange={handleFilterChange}
         />
         <input
           type="text"
           name="max"
-          placeholder="max price"
-          className="text-xs rounded-2xl pl-2 w-24 ring-1 ring-gray-400"
+          placeholder="Max price"
+          className="text-sm rounded-lg px-3 py-2 w-28 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:border-primary-500 focus:outline-none transition-colors"
           onChange={handleFilterChange}
         />
         {/* TODO: Filter Categories */}
         <select
           name="cat"
-          className="py-2 px-4 rounded-2xl text-xs font-medium bg-[#EBEDED]"
+          className="py-2 px-4 rounded-lg text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 focus:border-primary-500 focus:outline-none transition-colors"
           onChange={handleFilterChange}
         >
           <option>Category</option>
@@ -56,7 +56,7 @@ const Filter = () => {
         <select
           name=""
           id=""
-          className="py-2 px-4 rounded-2xl text-xs font-medium bg-[#EBEDED]"
+          className="py-2 px-4 rounded-lg text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 focus:border-primary-500 focus:outline-none transition-colors"
         >
           <option>All Filters</option>
         </select>
@@ -65,7 +65,7 @@ const Filter = () => {
         <select
           name="sort"
           id=""
-          className="py-2 px-4 rounded-2xl text-xs font-medium bg-white ring-1 ring-gray-400"
+          className="py-2 px-4 rounded-lg text-sm font-medium bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 focus:border-primary-500 focus:outline-none transition-colors min-w-40"
           onChange={handleFilterChange}
         >
           <option>Sort By</option>

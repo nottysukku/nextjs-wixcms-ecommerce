@@ -84,34 +84,38 @@ const ProductList = async ({
         {res.items.map((product: products.Product) => (
         <Link
           href={"/" + product.slug}
-          className="w-full flex flex-col gap-4 sm:w-[45%] lg:w-[22%]"
+          className="w-full flex flex-col gap-4 sm:w-[45%] lg:w-[22%] group"
           key={product._id}
         >
-          <div className="relative w-full h-80">
+          <div className="relative w-full h-80 bg-gray-50 dark:bg-gray-800 rounded-lg overflow-hidden">
             <Image
               src={product.media?.mainMedia?.image?.url || "/product.png"}
-              alt=""
+              alt={product.name || "Product image"}
               fill
               sizes="25vw"
-              className="absolute object-cover rounded-md z-10 hover:opacity-0 transition-opacity easy duration-500"
+              className="absolute object-cover z-10 hover:opacity-0 transition-opacity easy duration-500 group-hover:scale-105"
             />
             {product.media?.items && (
               <Image
                 src={product.media?.items[1]?.image?.url || "/product.png"}
-                alt=""
+                alt={product.name || "Product image"}
                 fill
                 sizes="25vw"
-                className="absolute object-cover rounded-md"
+                className="absolute object-cover"
               />
             )}
           </div>
-          <div className="flex justify-between">
-            <span className="font-medium">{product.name}</span>
-            <span className="font-semibold">₹{product.price?.price}</span>
+          <div className="flex justify-between items-start">
+            <span className="font-medium text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+              {product.name}
+            </span>
+            <span className="font-semibold text-primary-600 dark:text-primary-400">
+              ₹{product.price?.price}
+            </span>
           </div>
           {product.additionalInfoSections && (
             <div
-              className="text-sm text-gray-500"
+              className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2"
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(
                   product.additionalInfoSections.find(
@@ -121,7 +125,7 @@ const ProductList = async ({
               }}
             ></div>
           )}
-          <button className="rounded-2xl ring-1 ring-sukku text-sukku w-max py-2 px-4 text-xs hover:bg-sukku hover:text-white">
+          <button className="rounded-lg ring-1 ring-primary-600 text-primary-600 dark:ring-primary-400 dark:text-primary-400 w-max py-2 px-4 text-xs hover:bg-primary-600 hover:text-white dark:hover:bg-primary-400 dark:hover:text-gray-900 transition-all duration-200 font-medium">
             Add to Cart
           </button>
         </Link>
@@ -139,8 +143,8 @@ const ProductList = async ({
     console.error("Error fetching products:", error);
     return (
       <div className="mt-12 flex gap-x-8 gap-y-16 justify-between flex-wrap">
-        <div className="w-full text-center py-12">
-          <p className="text-gray-500">Error loading products. Please try again later.</p>
+        <div className="w-full text-center py-12 bg-red-50 dark:bg-red-950/20 rounded-lg border border-red-200 dark:border-red-800">
+          <p className="text-red-600 dark:text-red-400 font-medium">Error loading products. Please try again later.</p>
         </div>
       </div>
     );

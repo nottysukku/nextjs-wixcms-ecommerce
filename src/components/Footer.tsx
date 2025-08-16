@@ -4,64 +4,64 @@ import Copyright from "./Copyright";
 
 const Footer = () => {
   return (
-    <div className="py-24 px-4 md:px-8 lg:px-16 xl:32 2xl:px-64 bg-gray-100 text-sm mt-24">
+    <div className="py-24 px-4 md:px-8 lg:px-16 xl:32 2xl:px-64 bg-secondary-100 dark:bg-secondary-800 text-sm mt-24 transition-colors duration-300">
       {/* TOP */}
       <div className="flex flex-col md:flex-row justify-between gap-24">
         {/* LEFT */}
         <div className="w-full md:w-1/2 lg:w-1/4 flex flex-col gap-8">
           <Link href="/">
-            <div className="text-2xl tracking-wide">SUKKU</div>
+            <div className="text-2xl tracking-wide font-bold text-primary-600 dark:text-primary-400">SUKKU</div>
           </Link>
-          <p>
+          <p className="text-secondary-600 dark:text-secondary-400">
             3252 Plaza Apartments, Central Delhi, New Delhi 110052, India
           </p>
-          <span className="font-semibold">sukritchopra2003@gmail.com</span>
-          <span className="font-semibold">+91 9560760057</span>
+          <span className="font-semibold text-secondary-700 dark:text-secondary-300">sukritchopra2003@gmail.com</span>
+          <span className="font-semibold text-secondary-700 dark:text-secondary-300">+91 9560760057</span>
           <div className="flex gap-6">
-            <Image src="/facebook.png" alt="" width={16} height={16} />
-            <Image src="/instagram.png" alt="" width={16} height={16} />
-            <Image src="/youtube.png" alt="" width={16} height={16} />
-            <Image src="/pinterest.png" alt="" width={16} height={16} />
-            <Image src="/x.png" alt="" width={16} height={16} />
+            <Image src="/facebook.png" alt="" width={16} height={16} className="opacity-70 hover:opacity-100 transition-opacity" />
+            <Image src="/instagram.png" alt="" width={16} height={16} className="opacity-70 hover:opacity-100 transition-opacity" />
+            <Image src="/youtube.png" alt="" width={16} height={16} className="opacity-70 hover:opacity-100 transition-opacity" />
+            <Image src="/pinterest.png" alt="" width={16} height={16} className="opacity-70 hover:opacity-100 transition-opacity" />
+            <Image src="/x.png" alt="" width={16} height={16} className="opacity-70 hover:opacity-100 transition-opacity" />
           </div>
         </div>
         {/* CENTER */}
         <div className="hidden lg:flex justify-between w-1/2">
           <div className="flex flex-col justify-between">
-            <h1 className="font-medium text-lg">COMPANY</h1>
+            <h1 className="font-medium text-lg text-secondary-800 dark:text-secondary-200">COMPANY</h1>
             <div className="flex flex-col gap-6">
-              <Link href="">About Us</Link>
-              <Link href="">Careers</Link>
-              <Link href="">Affiliates</Link>
-              <Link href="">Blog</Link>
-              <Link href="">Contact Us</Link>
+              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">About Us</Link>
+              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Careers</Link>
+              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Affiliates</Link>
+              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Blog</Link>
+              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Contact Us</Link>
             </div>
           </div>
           <div className="flex flex-col justify-between">
-            <h1 className="font-medium text-lg">SHOP</h1>
+            <h1 className="font-medium text-lg text-secondary-800 dark:text-secondary-200">SHOP</h1>
             <div className="flex flex-col gap-6">
-              <Link href="">New Arrivals</Link>
-              <Link href="">Accessories</Link>
-              <Link href="">Men</Link>
-              <Link href="">Women</Link>
-              <Link href="">All Products</Link>
+              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">New Arrivals</Link>
+              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Accessories</Link>
+              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Men</Link>
+              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Women</Link>
+              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">All Products</Link>
             </div>
           </div>
           <div className="flex flex-col justify-between">
-            <h1 className="font-medium text-lg">HELP</h1>
+            <h1 className="font-medium text-lg text-secondary-800 dark:text-secondary-200">HELP</h1>
             <div className="flex flex-col gap-6">
-              <Link href="">Customer Service</Link>
-              <Link href="">My Account</Link>
-              <Link href="">Find a Store</Link>
-              <Link href="">Legal & Privacy</Link>
-              <Link href="">Gift Card</Link>
+              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Customer Service</Link>
+              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">My Account</Link>
+              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Find a Store</Link>
+              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Legal & Privacy</Link>
+              <Link href="" className="text-secondary-600 dark:text-secondary-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Gift Card</Link>
             </div>
           </div>
         </div>
         {/* RIGHT */}
         <div className="w-full md:w-1/2 lg:w-1/4 flex flex-col gap-8">
-          <h1 className="font-medium text-lg">SUBSCRIBE</h1>
-          <p>
+          <h1 className="font-medium text-lg text-secondary-800 dark:text-secondary-200">SUBSCRIBE</h1>
+          <p className="text-secondary-600 dark:text-secondary-400">
             Be the first to get the latest news about trends, promotions, and
             much more!
           </p>
@@ -69,31 +69,31 @@ const Footer = () => {
             <input
               type="text"
               placeholder="Email address"
-              className="p-4 w-3/4"
+              className="p-4 w-3/4 bg-white dark:bg-secondary-700 border border-secondary-300 dark:border-secondary-600 text-secondary-900 dark:text-secondary-100 placeholder-secondary-500 dark:placeholder-secondary-400 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all"
             />
-            <button className="w-1/4 bg-sukku text-white">JOIN</button>
+            <button className="w-1/4 bg-primary-600 hover:bg-primary-700 text-white transition-colors">JOIN</button>
           </div>
-          <span className="font-semibold">Secure Payments</span>
+          <span className="font-semibold text-secondary-700 dark:text-secondary-300">Secure Payments</span>
           <div className="flex justify-between">
-            <Image src="/discover.png" alt="" width={40} height={20} />
-            <Image src="/skrill.png" alt="" width={40} height={20} />
-            <Image src="/paypal.png" alt="" width={40} height={20} />
-            <Image src="/mastercard.png" alt="" width={40} height={20} />
-            <Image src="/visa.png" alt="" width={40} height={20} />
+            <Image src="/discover.png" alt="" width={40} height={20} className="opacity-70 hover:opacity-100 transition-opacity" />
+            <Image src="/skrill.png" alt="" width={40} height={20} className="opacity-70 hover:opacity-100 transition-opacity" />
+            <Image src="/paypal.png" alt="" width={40} height={20} className="opacity-70 hover:opacity-100 transition-opacity" />
+            <Image src="/mastercard.png" alt="" width={40} height={20} className="opacity-70 hover:opacity-100 transition-opacity" />
+            <Image src="/visa.png" alt="" width={40} height={20} className="opacity-70 hover:opacity-100 transition-opacity" />
           </div>
         </div>
       </div>
       {/* BOTTOM */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-8 mt-16">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-8 mt-16 pt-8 border-t border-secondary-300 dark:border-secondary-600">
         <Copyright />
         <div className="flex flex-col gap-8 md:flex-row">
-          <div className="">
-            <span className="text-gray-500 mr-4">Language</span>
-            <span className="font-medium">India | English</span>
+          <div className="text-secondary-600 dark:text-secondary-400">
+            <span className="text-secondary-500 dark:text-secondary-500 mr-4">Language</span>
+            <span className="font-medium text-secondary-700 dark:text-secondary-300">India | English</span>
           </div>
-          <div className="">
-            <span className="text-gray-500 mr-4">Currency</span>
-            <span className="font-medium">₹ INR</span>
+          <div className="text-secondary-600 dark:text-secondary-400">
+            <span className="text-secondary-500 dark:text-secondary-500 mr-4">Currency</span>
+            <span className="font-medium text-secondary-700 dark:text-secondary-300">₹ INR</span>
           </div>
         </div>
       </div>

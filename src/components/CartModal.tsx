@@ -46,17 +46,22 @@ const CartModal = () => {
   };
 
   return (
-    <div className="w-max absolute p-4 rounded-md shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white top-12 right-0 flex flex-col gap-6 z-20">
+    <div className="w-max absolute p-6 rounded-lg shadow-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 top-12 right-0 flex flex-col gap-6 z-20 min-w-80">
       {!cart.lineItems ? (
-        <div className="">Cart is Empty</div>
+        <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+          <div className="mb-2 text-4xl">🛒</div>
+          <p>Your cart is empty</p>
+        </div>
       ) : (
         <>
-          <h2 className="text-xl">Shopping Cart</h2>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700 pb-3">
+            Shopping Cart
+          </h2>
           {/* LIST */}
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-4 max-h-96 overflow-y-auto">
             {/* ITEM */}
             {cart.lineItems.map((item) => (
-              <div className="flex gap-4" key={item._id}>
+              <div className="flex gap-4 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg" key={item._id}>
                 {item.image && (
                   <Image
                     src={wixMedia.getScaledToFillImageUrl(
@@ -65,7 +70,7 @@ const CartModal = () => {
                       96,
                       {}
                     )}
-                    alt=""
+                    alt={item.productName?.original || "Product"}
                     width={72}
                     height={96}
                     className="object-cover rounded-md"
@@ -75,58 +80,60 @@ const CartModal = () => {
                   {/* TOP */}
                   <div className="">
                     {/* TITLE */}
-                    <div className="flex items-center justify-between gap-8">
-                      <h3 className="font-semibold">
+                    <div className="flex items-center justify-between gap-4">
+                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-sm">
                         {item.productName?.original}
                       </h3>
-                      <div className="p-1 bg-gray-50 rounded-sm flex items-center gap-2">
+                      <div className="p-2 bg-primary-50 dark:bg-primary-900/30 rounded-md flex items-center gap-2 text-sm">
                         {item.quantity && item.quantity > 1 && (
-                          <div className="text-xs text-green-500">
+                          <div className="text-xs text-primary-600 dark:text-primary-400 font-medium">
                             {item.quantity} x{" "}
                           </div>
                         )}
-                        ₹{item.price?.amount}
+                        <span className="font-semibold text-primary-700 dark:text-primary-300">
+                          ₹{item.price?.amount}
+                        </span>
                       </div>
                     </div>
                     {/* DESC */}
-                    <div className="text-sm text-gray-500">
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                       {item.availability?.status}
                     </div>
                   </div>
                   {/* BOTTOM */}
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">Qty. {item.quantity}</span>
-                    <span
-                      className="text-blue-500"
-                      style={{ cursor: isLoading ? "not-allowed" : "pointer" }}
+                  <div className="flex justify-between text-sm mt-2">
+                    <span className="text-gray-600 dark:text-gray-400">Qty. {item.quantity}</span>
+                    <button
+                      className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                      disabled={isLoading}
                       onClick={() => removeItem(wixClient, item._id!)}
                     >
                       Remove
-                    </span>
+                    </button>
                   </div>
                 </div>
               </div>
             ))}
           </div>
           {/* BOTTOM */}
-          <div className="">
-            <div className="flex items-center justify-between font-semibold">
-              <span className="">Subtotal</span>
-              <span className="">₹{calculateSubtotal()}</span>
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+            <div className="flex items-center justify-between font-semibold text-lg mb-2">
+              <span className="text-gray-900 dark:text-gray-100">Subtotal</span>
+              <span className="text-primary-600 dark:text-primary-400">₹{calculateSubtotal()}</span>
             </div>
-            <p className="text-gray-500 text-sm mt-2 mb-4">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
               Shipping and taxes calculated at checkout.
             </p>
-            <div className="flex justify-between text-sm">
-              <button className="rounded-md py-3 px-4 ring-1 ring-gray-300">
+            <div className="flex gap-3">
+              <button className="flex-1 rounded-lg py-3 px-4 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium">
                 View Cart
               </button>
               <button
-                className="rounded-md py-3 px-4 bg-black text-white disabled:cursor-not-allowed disabled:opacity-75"
+                className="flex-1 rounded-lg py-3 px-4 bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-400 text-white disabled:cursor-not-allowed disabled:opacity-50 transition-colors font-medium"
                 disabled={isLoading}
                 onClick={handleCheckout}
               >
-                Checkout
+                {isLoading ? "Processing..." : "Checkout"}
               </button>
             </div>
           </div>

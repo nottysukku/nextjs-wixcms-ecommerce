@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { WixClientContextProvider } from "@/context/wixContext";
+import { ThemeProvider } from "@/context/themeContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,12 +30,14 @@ export default function RootLayout({
         <link rel="shortcut icon" href="/favicon.jpg" type="image/jpeg" />
         <link rel="apple-touch-icon" href="/favicon.jpg" />
       </head>
-      <body className={inter.className}>
-        <WixClientContextProvider>
-          <Navbar />
-          {children}
-          <Footer />
-        </WixClientContextProvider>
+      <body className={`${inter.className} bg-white dark:bg-secondary-900 text-secondary-900 dark:text-secondary-100 transition-colors duration-300`}>
+        <ThemeProvider>
+          <WixClientContextProvider>
+            <Navbar />
+            {children}
+            <Footer />
+          </WixClientContextProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
