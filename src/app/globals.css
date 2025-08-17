@@ -2,6 +2,161 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Curtain Animation Styles */
+@keyframes curtainOpen {
+  0% {
+    width: 50%;
+  }
+  100% {
+    width: 0%;
+  }
+}
+
+@keyframes curtainClose {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 50%;
+  }
+}
+
+/* Enhanced Dynamic Curtain Animations */
+@keyframes curtainSlideInLeft {
+  0% {
+    transform: translateX(-100%) skewX(3deg);
+    opacity: 0.8;
+  }
+  20% {
+    transform: translateX(-80%) skewX(2deg);
+    opacity: 0.9;
+  }
+  60% {
+    transform: translateX(-10%) skewX(1deg);
+    opacity: 0.98;
+  }
+  80% {
+    transform: translateX(2%) skewX(-0.5deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0%) skewX(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes curtainSlideInRight {
+  0% {
+    transform: translateX(100%) skewX(-3deg);
+    opacity: 0.8;
+  }
+  20% {
+    transform: translateX(80%) skewX(-2deg);
+    opacity: 0.9;
+  }
+  60% {
+    transform: translateX(10%) skewX(-1deg);
+    opacity: 0.98;
+  }
+  80% {
+    transform: translateX(-2%) skewX(0.5deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0%) skewX(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes curtainWave {
+  0%, 100% {
+    transform: translateY(0px) scaleY(1);
+  }
+  33% {
+    transform: translateY(-1px) scaleY(0.999);
+  }
+  66% {
+    transform: translateY(1px) scaleY(1.001);
+  }
+}
+
+@keyframes clothFold {
+  0% {
+    transform: scaleX(0.95);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scaleX(1.02);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.curtain-opening {
+  animation: curtainOpen 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.curtain-closing {
+  animation: curtainClose 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.shimmer-bg {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Enhanced loading spinner */
+@keyframes spin-elegant {
+  0% {
+    transform: rotate(0deg);
+    border-width: 4px;
+  }
+  50% {
+    border-width: 2px;
+  }
+  100% {
+    transform: rotate(360deg);
+    border-width: 4px;
+  }
+}
+
+.spinner-elegant {
+  animation: spin-elegant 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+}
+
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }

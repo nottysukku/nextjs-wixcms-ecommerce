@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import GoogleMap from "@/components/GoogleMap";
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -263,15 +264,47 @@ const ContactPage = () => {
         </div>
       </div>
 
-      {/* Map placeholder */}
-      <div className="bg-gradient-to-r from-secondary-100 to-primary-100 dark:from-secondary-900/30 dark:to-primary-900/30 rounded-2xl p-8 md:p-12 text-center mb-12">
-        <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Visit Our Location</h3>
-        <div className="bg-gray-200 dark:bg-gray-700 rounded-xl h-64 flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-4xl mb-2">🗺️</div>
-            <p className="text-gray-600 dark:text-gray-400">Interactive map coming soon</p>
-            <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
-              Central Delhi, New Delhi 110052, India
+      {/* Interactive Google Map */}
+      <div className="bg-gradient-to-r from-secondary-100 to-primary-100 dark:from-secondary-900/30 dark:to-primary-900/30 rounded-2xl p-8 md:p-12 mb-12">
+        <div className="text-center mb-8">
+          <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+            📍 Visit Our Location
+          </h3>
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            Find us in the heart of Central Delhi. Click on the marker for directions and more details.
+          </p>
+        </div>
+        
+        <GoogleMap className="w-full h-96 md:h-[500px]" />
+        
+        {/* Quick directions */}
+        <div className="mt-6 text-center">
+          <div className="inline-flex flex-wrap gap-4 justify-center">
+            <a 
+              href="https://www.google.com/maps/dir/?api=1&destination=28.6304,77.2177"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors duration-200"
+            >
+              <span className="mr-2">🧭</span>
+              Get Directions
+            </a>
+            <a 
+              href="https://www.google.com/maps/search/?api=1&query=Central+Delhi+New+Delhi+110052+India"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-6 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
+            >
+              <span className="mr-2">🗺️</span>
+              View on Google Maps
+            </a>
+          </div>
+          
+          <div className="mt-4 text-sm text-gray-600 dark:text-gray-400">
+            <p>
+              <strong>🚇 Nearest Metro:</strong> Rajiv Chowk (Blue & Yellow Line) - 2 km away<br />
+              <strong>🚌 Bus Routes:</strong> Multiple routes available to Central Delhi<br />
+              <strong>🚗 Parking:</strong> Street parking and nearby parking facilities available
             </p>
           </div>
         </div>
