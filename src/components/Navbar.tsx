@@ -6,6 +6,9 @@ import Image from "next/image";
 import SearchBar from "./SearchBar";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import CartModal from "./CartModal";
+import { useWixClient } from "@/hooks/useWixClient";
+import { useCartStore } from "@/hooks/useCartStore";
 
 // Dynamically import components that use client-side hooks
 const NavIcons = dynamic(() => import("./NavIcons"), { ssr: false });
@@ -19,8 +22,17 @@ const ThemeToggle = dynamic(() => import('./ThemeToggle'), {
 });
 
 const Navbar = () => {
+  const [isSticky, setIsSticky] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+
+  const wixClient = useWixClient();
+  const { cart, counter, getCart } = useCartStore();
+
+  useEffect(() => {
+    getCart(wixClient);
+  }, [wixClient, getCart]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -53,7 +65,23 @@ const Navbar = () => {
         <Link href="/">
           <div className="text-2xl tracking-wide font-bold text-primary-600 dark:text-primary-400">SUKKU</div>
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          {/* Mobile Cart Icon */}
+          <div
+            className="relative cursor-pointer"
+            onClick={() => setIsCartOpen((prev) => !prev)}
+          >
+            <Image 
+              src="/cart.png" 
+              alt="Cart" 
+              width={20} 
+              height={20} 
+              className="dark:invert dark:brightness-0 dark:filter transition-all duration-200"
+            />
+            <div className="absolute -top-2 -right-2 w-4 h-4 bg-sukku rounded-full text-white text-xs flex items-center justify-center">
+              {counter}
+            </div>
+          </div>
           <ThemeToggle />
           <Menu />
         </div>
@@ -83,6 +111,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+      {isCartOpen && <CartModal />}
     </div>
   );
 };

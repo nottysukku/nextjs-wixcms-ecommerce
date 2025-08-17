@@ -59,6 +59,13 @@ const NavIcons = () => {
 
   const { cart, counter, getCart } = useCartStore();
 
+  // Debug logging for cart state
+  console.log("🛍️ NavIcons cart state:", { 
+    counter, 
+    cartExists: !!cart,
+    lineItemsCount: cart?.lineItems?.length 
+  });
+
   useEffect(() => {
     getCart(wixClient);
   }, [wixClient, getCart]);

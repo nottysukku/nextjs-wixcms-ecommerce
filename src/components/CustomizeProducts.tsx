@@ -13,48 +13,89 @@ const CustomizeProducts = ({
   variants: products.Variant[];
   productOptions: products.ProductOption[];
 }) => {
+  // Initialize selectedOptions with first choice of each product option
+  const getInitialSelectedOptions = () => {
+    console.log("getInitialSelectedOptions called with productOptions:", productOptions);
+    const initialOptions: { [key: string]: string } = {};
+    productOptions.forEach(option => {
+      console.log("Processing option:", option);
+      if (option.choices && option.choices.length > 0) {
+        initialOptions[option.name!] = option.choices[0].description!;
+        console.log(`Added ${option.name}: ${option.choices[0].description}`);
+      }
+    });
+    console.log("Final initial options:", initialOptions);
+    return initialOptions;
+  };
+
   const [selectedOptions, setSelectedOptions] = useState<{
     [key: string]: string;
-  }>({});
+  }>(getInitialSelectedOptions());
+  
   const [selectedVariant, setSelectedVariant] = useState<products.Variant>();
 
-  // Initialize with first available variant if none selected
-  useEffect(() => {
-    if (Object.keys(selectedOptions).length === 0 && variants.length > 0) {
-      // Check if we have actual variant choices or just default variant
-      const variantWithChoices = variants.find(variant => {
-        return variant.choices && Object.keys(variant.choices).length > 0;
-      });
+  console.log("CustomizeProducts rendered with:", {
+    productId,
+    variants: variants.length,
+    productOptions: productOptions.length,
+    currentSelectedOptions: selectedOptions,
+    initialOptions: getInitialSelectedOptions()
+  });
 
-      if (variantWithChoices && variantWithChoices.choices) {
-        console.log("Auto-selecting first variant with choices:", variantWithChoices);
-        setSelectedOptions(variantWithChoices.choices);
-      } else {
-        // No variants have actual choices, but product has options - this is a configuration issue
-        // For now, we'll use the default variant
-        console.log("Product has productOptions but variants don't have choices. Using default variant.");
-        const defaultVariant = variants[0];
-        if (defaultVariant) {
-          setSelectedVariant(defaultVariant);
+    // Find matching variant when selectedOptions change
+  useEffect(() => {
+    console.log("Variant matching effect - selectedOptions:", selectedOptions);
+    
+    if (variants.length > 0 && Object.keys(selectedOptions).length > 0) {
+      console.log("Looking for matching variant...");
+      const variant = variants.find((v) => {
+        const variantChoices = v.choices;
+        if (!variantChoices) {
+          console.log("Variant has no choices, using first variant");
+          return true; // Use first variant if no choices
         }
-      }
+
+        return Object.entries(selectedOptions).every(
+          ([key, value]) => {
+            const match = variantChoices[key] === value;
+            console.log(`Matching ${key}: ${value} === ${variantChoices[key]} = ${match}`);
+            return match;
+          }
+        );
+      });
+      
+      console.log("Selected variant:", variant);
+      setSelectedVariant(variant || variants[0]); // Fallback to first variant
+    } else {
+      console.log("No variants or no selected options, using first variant");
+      setSelectedVariant(variants[0]);
     }
-  }, [variants]);
+  }, [selectedOptions, variants]);
 
   useEffect(() => {
+    // Find matching variant based on selected options
     const variant = variants.find((v) => {
       const variantChoices = v.choices;
       if (!variantChoices) return false;
       
-      const matches = Object.entries(selectedOptions).every(
-        ([key, value]) => variantChoices[key] === value
-      );
+      // If variant has choices, match them with selected options
+      if (Object.keys(variantChoices).length > 0) {
+        const matches = Object.entries(selectedOptions).every(
+          ([key, value]) => variantChoices[key] === value
+        );
+        return matches;
+      }
       
-      return matches;
+      return false;
     });
     
-    console.log("Selected variant:", variant?._id, "with options:", selectedOptions);
-    setSelectedVariant(variant);
+    // If no variant found with matching choices, use the first variant (default)
+    // This handles cases where product has options but variants don't have proper choices
+    const selectedVariantResult = variant || (variants.length > 0 ? variants[0] : undefined);
+    
+    console.log("Selected variant:", selectedVariantResult?._id, "with options:", selectedOptions);
+    console.log("All variants:", variants.map(v => ({ id: v._id, choices: v.choices })));
+    setSelectedVariant(selectedVariantResult);
   }, [selectedOptions, variants]);
 
   const handleOptionSelect = (optionType: string, choice: string) => {
@@ -62,29 +103,39 @@ const CustomizeProducts = ({
   };
 
   const isVariantInStock = (choices: { [key: string]: string }) => {
-    return variants.some((variant) => {
+    // Find variant that matches the given choices
+    const matchingVariant = variants.find((variant) => {
       const variantChoices = variant.choices;
       if (!variantChoices) return false;
 
-      const matchesChoices = Object.entries(choices).every(
-        ([key, value]) => variantChoices[key] === value
-      );
-
-      if (!matchesChoices) return false;
-
-      // Check stock status - be more flexible with stock checking
-      // If inStock is explicitly false, then it's out of stock
-      if (variant.stock?.inStock === false) return false;
+      // If variant has choices, match them
+      if (Object.keys(variantChoices).length > 0) {
+        const matchesChoices = Object.entries(choices).every(
+          ([key, value]) => variantChoices[key] === value
+        );
+        return matchesChoices;
+      }
       
-      // If quantity is explicitly 0, then it's out of stock
-      if (variant.stock?.quantity === 0) return false;
-      
-      // If we have a positive quantity, it's in stock
-      if (variant.stock?.quantity && variant.stock.quantity > 0) return true;
-      
-      // If inStock is true or undefined/null, assume it's in stock (default behavior)
-      return variant.stock?.inStock === true || variant.stock?.inStock === undefined;
+      return false;
     });
+
+    // If no specific variant found, use the first variant (this handles products with options but no variant choices)
+    const variantToCheck = matchingVariant || variants[0];
+    
+    if (!variantToCheck) return false;
+
+    // Check stock status - be more flexible with stock checking
+    // If inStock is explicitly false, then it's out of stock
+    if (variantToCheck.stock?.inStock === false) return false;
+    
+    // If quantity is explicitly 0, then it's out of stock
+    if (variantToCheck.stock?.quantity === 0) return false;
+    
+    // If we have a positive quantity, it's in stock
+    if (variantToCheck.stock?.quantity && variantToCheck.stock.quantity > 0) return true;
+    
+    // If inStock is true or undefined/null, assume it's in stock (default behavior)
+    return variantToCheck.stock?.inStock === true || variantToCheck.stock?.inStock === undefined;
   };
 
   return (
@@ -163,6 +214,7 @@ const CustomizeProducts = ({
         variantId={
           selectedVariant?._id || variants[0]?._id || "00000000-0000-0000-0000-000000000000"
         }
+        selectedOptions={selectedOptions}
         stockNumber={
           selectedVariant ? (
             // If we have a selected variant, use its stock info

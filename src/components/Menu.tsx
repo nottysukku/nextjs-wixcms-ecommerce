@@ -2,10 +2,21 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import CartModal from "./CartModal";
+import { useWixClient } from "@/hooks/useWixClient";
+import { useCartStore } from "@/hooks/useCartStore";
 
 const Menu = () => {
   const [open, setOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const wixClient = useWixClient();
+  const { cart, counter, getCart } = useCartStore();
+
+  useEffect(() => {
+    getCart(wixClient);
+  }, [wixClient, getCart]);
 
   return (
     <div className="">
@@ -26,8 +37,30 @@ const Menu = () => {
           <Link href="/contact" onClick={() => setOpen(false)}>Contact</Link>
           <Link href="/login" onClick={() => setOpen(false)}>Login</Link>
           <Link href="/profile" onClick={() => setOpen(false)}>Profile</Link>
+          
+          {/* Cart Link for Mobile */}
+          <div
+            className="relative cursor-pointer flex items-center gap-2 hover:text-sukku transition-colors"
+            onClick={() => {
+              setIsCartOpen((prev) => !prev);
+              setOpen(false);
+            }}
+          >
+            <Image 
+              src="/cart.png" 
+              alt="Cart" 
+              width={24} 
+              height={24} 
+              className="invert brightness-0 filter"
+            />
+            <span>Cart</span>
+            <div className="absolute -top-2 -right-2 w-5 h-5 bg-sukku rounded-full text-white text-xs flex items-center justify-center">
+              {counter}
+            </div>
+          </div>
         </div>
       )}
+      {isCartOpen && <CartModal />}
     </div>
   );
 };

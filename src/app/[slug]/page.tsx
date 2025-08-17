@@ -21,13 +21,24 @@ const SinglePage = async ({ params }: { params: { slug: string } }) => {
   const product = products.items[0];
 
   // Debug: Log the product stock information
+  console.log("Product detailed choices:");
+  product.productOptions?.forEach(opt => {
+    console.log(`Option: ${opt.name}`, opt.choices?.map(choice => ({
+      description: choice.description,
+      value: choice.value
+    })));
+  });
+
   console.log("Product stock info:", {
     productId: product._id,
     stock: product.stock,
     manageVariants: product.manageVariants,
     productOptions: product.productOptions?.map(opt => ({
       name: opt.name,
-      choices: opt.choices?.map(choice => choice.description)
+      choices: opt.choices?.map(choice => ({
+        description: choice.description,
+        value: choice.value
+      }))
     })),
     variants: product.variants?.map(v => ({
       id: v._id,
