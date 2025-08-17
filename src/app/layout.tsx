@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
 import LoadingBar from "@/components/LoadingBar";
+import CursorStardust from "@/components/CursorStardust";
 import { WixClientContextProvider } from "@/context/wixContext";
 import { ThemeProvider } from "@/context/themeContext";
 import { LoadingProvider } from "@/context/loadingContext";
@@ -37,6 +38,7 @@ export default function RootLayout({
         <ThemeProvider>
           <WixClientContextProvider>
             <LoadingProvider>
+              <CursorStardust />
               <LoadingBar />
               <PageTransition>
                 <Navbar />
