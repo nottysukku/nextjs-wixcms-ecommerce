@@ -2,6 +2,7 @@ import Filter from "@/components/Filter";
 import ProductList from "@/components/ProductList";
 import { wixClientServer } from "@/lib/wixClientServer";
 import Image from "next/image";
+import Link from "next/link";
 import { Suspense } from "react";
 
 const ShopPage = async ({ searchParams }: { searchParams: any }) => {
@@ -40,9 +41,10 @@ const ShopPage = async ({ searchParams }: { searchParams: any }) => {
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {categories.items.slice(0, 8).map((category) => (
-              <div
+              <Link
                 key={category._id}
-                className="group cursor-pointer bg-white dark:bg-secondary-800 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700"
+                href={`/list?cat=${category.slug || category._id}`}
+                className="group cursor-pointer bg-white dark:bg-secondary-800 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700 transform hover:scale-105"
               >
                 <div className="aspect-square relative bg-gradient-to-br from-primary-100 to-secondary-100 dark:from-primary-900/30 dark:to-secondary-900/30">
                   {category.media?.mainMedia?.image?.url ? (
@@ -54,16 +56,33 @@ const ShopPage = async ({ searchParams }: { searchParams: any }) => {
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full">
-                      <div className="text-4xl">📦</div>
+                      <div className="text-4xl opacity-70 group-hover:opacity-100 transition-opacity">📦</div>
                     </div>
                   )}
+                  {/* Hover overlay */}
+                  <div className="absolute inset-0 bg-primary-600/0 group-hover:bg-primary-600/10 transition-all duration-300" />
+                  {/* Category label overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                    <p className="text-white text-sm font-medium">Browse Collection</p>
+                  </div>
                 </div>
                 <div className="p-4">
                   <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-center group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                     {category.name}
                   </h3>
+                  {category.description && (
+                    <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-1 line-clamp-2">
+                      {category.description}
+                    </p>
+                  )}
+                  {/* Product count if available */}
+                  <div className="flex items-center justify-center mt-2">
+                    <span className="text-xs text-primary-600 dark:text-primary-400 font-medium bg-primary-50 dark:bg-primary-900/20 px-2 py-1 rounded-full">
+                      View Products →
+                    </span>
+                  </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useCartStore } from "@/hooks/useCartStore";
 import { media as wixMedia } from "@wix/sdk";
 import { useWixClient } from "@/hooks/useWixClient";
@@ -11,38 +12,55 @@ const CartModal = () => {
   // const cartItems = true;
 
   const wixClient = useWixClient();
-  const { cart, isLoading, removeItem } = useCartStore();
+  const { cart, isLoading, removeItem, updateItemQuantity, calculateSubtotal } = useCartStore();
 
   const handleCheckout = async () => {
+    if (!wixClient) {
+      console.error("WixClient not available for checkout");
+      return;
+    }
+
     try {
-      const checkout =
-        await wixClient.currentCart.createCheckoutFromCurrentCart({
-          channelType: currentCart.ChannelType.WEB,
-        });
+      const checkoutData = await wixClient.currentCart.createCheckoutFromCurrentCart({
+        channelType: currentCart.ChannelType.WEB,
+      });
 
-      const { redirectSession } =
-        await wixClient.redirects.createRedirectSession({
-          ecomCheckout: { checkoutId: checkout.checkoutId },
-          callbacks: {
-            postFlowUrl: window.location.origin,
-            thankYouPageUrl: `${window.location.origin}/success`,
-          },
-        });
+      console.log("Checkout data:", checkoutData);
 
-      if (redirectSession?.fullUrl) {
-        window.location.href = redirectSession.fullUrl;
+      // Handle different response formats
+      if (checkoutData?.checkoutUrl) {
+        // Direct checkout URL
+        window.location.href = checkoutData.checkoutUrl;
+      } else if (checkoutData?.checkoutId) {
+        // Construct checkout URL using checkoutId
+        const checkoutUrl = `https://www.wix.com/checkout/start?checkoutId=${checkoutData.checkoutId}`;
+        console.log("Constructed checkout URL:", checkoutUrl);
+        window.location.href = checkoutUrl;
+      } else if (checkoutData?.redirects?.checkoutUrl) {
+        window.location.href = checkoutData.redirects.checkoutUrl;
+      } else {
+        // Try to use Wix redirect session
+        try {
+          const redirectSession = await wixClient.redirects.createRedirectSession({
+            ecomCheckout: {
+              checkoutId: checkoutData.checkoutId
+            }
+          });
+          
+          if (redirectSession?.fullUrl) {
+            window.location.href = redirectSession.fullUrl;
+          } else {
+            throw new Error("No redirect URL in session");
+          }
+        } catch (redirectError) {
+          console.error("Redirect session error:", redirectError);
+          alert("Unable to proceed to checkout. Please try again or contact support.");
+        }
       }
     } catch (err) {
-      console.log(err);
+      console.error("Checkout error:", err);
+      alert("Checkout failed. Please try again.");
     }
-  };
-
-  const calculateSubtotal = () => {
-    return cart.lineItems?.reduce((total, item) => {
-      const itemPrice = Number(item.price?.amount) || 0;
-      const itemQuantity = Number(item.quantity) || 1;
-      return total + (itemPrice * itemQuantity);
-    }, 0) || 0;
   };
 
   return (
@@ -101,8 +119,27 @@ const CartModal = () => {
                     </div>
                   </div>
                   {/* BOTTOM */}
-                  <div className="flex justify-between text-sm mt-2">
-                    <span className="text-gray-600 dark:text-gray-400">Qty. {item.quantity}</span>
+                  <div className="flex justify-between items-center text-sm mt-2">
+                    <div className="flex items-center gap-3">
+                      <span className="text-gray-600 dark:text-gray-400">Qty:</span>
+                      <div className="flex items-center gap-2">
+                        <button
+                          className="w-6 h-6 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          disabled={isLoading || (item.quantity || 1) <= 1}
+                          onClick={() => updateItemQuantity(wixClient, item._id!, (item.quantity || 1) - 1)}
+                        >
+                          −
+                        </button>
+                        <span className="w-8 text-center font-medium">{item.quantity}</span>
+                        <button
+                          className="w-6 h-6 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          disabled={isLoading}
+                          onClick={() => updateItemQuantity(wixClient, item._id!, (item.quantity || 1) + 1)}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
                     <button
                       className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                       disabled={isLoading}
@@ -125,12 +162,14 @@ const CartModal = () => {
               Shipping and taxes calculated at checkout.
             </p>
             <div className="flex gap-3">
-              <button className="flex-1 rounded-lg py-3 px-4 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium">
-                View Cart
-              </button>
+              <Link href="/test-cart" className="flex-1">
+                <button className="w-full rounded-lg py-3 px-4 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium">
+                  View Cart
+                </button>
+              </Link>
               <button
                 className="flex-1 rounded-lg py-3 px-4 bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-400 text-white disabled:cursor-not-allowed disabled:opacity-50 transition-colors font-medium"
-                disabled={isLoading}
+                disabled={isLoading || !wixClient}
                 onClick={handleCheckout}
               >
                 {isLoading ? "Processing..." : "Checkout"}

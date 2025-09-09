@@ -2,6 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Enhanced Navbar Animation */
+.navbar-container {
+  transform: translateY(0);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.navbar-container.hide {
+  transform: translateY(-100%);
+}
+
+.navbar-container.show {
+  transform: translateY(0);
+}
+
+/* Alternative slide animation */
+@keyframes slideUp {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.navbar-slide-up {
+  animation: slideUp 0.3s ease-in-out forwards;
+}
+
+.navbar-slide-down {
+  animation: slideDown 0.3s ease-in-out forwards;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
 /* Curtain Animation Styles */
 @keyframes curtainOpen {
   0% {

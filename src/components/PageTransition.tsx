@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useLoading } from '@/context/loadingContext';
+import Image from 'next/image';
 
 interface PageTransitionProps {
   children: React.ReactNode;
@@ -209,8 +210,20 @@ const PageTransition = ({ children }: PageTransitionProps) => {
             <div className="relative z-10">
               {/* Brand Logo Area */}
               <div className="mb-8">
-                <div className="text-4xl font-bold tracking-wider mb-2">
-                  {isInitialLoad ? '✨' : '🛍️'}
+                <div className="flex items-center justify-center mb-4">
+                  <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-white/30 shadow-lg">
+                    <Image
+                      src="/favicon.jpg"
+                      alt="Nottysukkus Logo"
+                      fill
+                      className="object-cover"
+                      sizes="78px"
+                      priority
+                    />
+                  </div>
+                  {isInitialLoad && (
+                    <div className="ml-3 text-2xl animate-bounce">✨</div>
+                  )}
                 </div>
                 <div className="h-1 w-24 mx-auto bg-gradient-to-r from-red-400 via-white to-blue-400 rounded-full"></div>
               </div>

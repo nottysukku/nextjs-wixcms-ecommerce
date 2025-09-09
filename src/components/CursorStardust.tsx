@@ -6,8 +6,25 @@ const CursorStardust = () => {
   const cursorRef = useRef<HTMLDivElement>(null);
   const [isClicking, setIsClicking] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    // Check if device is mobile/small screen
+    const checkMobile = () => {
+      const isMobileDevice = window.innerWidth < 768 || 'ontouchstart' in window;
+      setIsMobile(isMobileDevice);
+    };
+
+    // Initial check
+    checkMobile();
+
+    // Listen for resize events
+    window.addEventListener('resize', checkMobile);
+
+    // Early return if mobile - don't set up cursor
+    if (isMobile) {
+      return () => window.removeEventListener('resize', checkMobile);
+    }
     const cursor = cursorRef.current;
     if (!cursor) return;
 
@@ -41,20 +58,28 @@ const CursorStardust = () => {
     document.addEventListener('mouseenter', handleMouseEnter, { passive: true });
 
     return () => {
+      window.removeEventListener('resize', checkMobile);
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mousedown', handleMouseDown);
       document.removeEventListener('mouseup', handleMouseUp);
       document.removeEventListener('mouseleave', handleMouseLeave);
       document.removeEventListener('mouseenter', handleMouseEnter);
     };
-  }, []);
+  }, [isMobile]);
+
+  // Don't render anything on mobile devices
+  if (isMobile) {
+    return null;
+  }
 
   return (
     <>
-      {/* Optimized cursor hiding - only target body to avoid cascading */}
+      {/* Optimized cursor hiding - only target body to avoid cascading - Only on desktop */}
       <style jsx global>{`
-        body {
-          cursor: none !important;
+        @media (min-width: 768px) {
+          body {
+            cursor: none !important;
+          }
         }
       `}</style>
 

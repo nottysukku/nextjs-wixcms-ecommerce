@@ -35,6 +35,11 @@ const Add = ({
 
   // Debug: Log the props being passed to Add component
   console.log("Add component props:", { productId, variantId, stockNumber, selectedOptions });
+  console.log("🔍 WixClient in Add component:", {
+    wixClient,
+    hasCurrentCart: !!wixClient?.currentCart,
+    hasAddToCurrentCart: !!wixClient?.currentCart?.addToCurrentCart
+  });
 
   return (
     <div className="flex flex-col gap-4">
@@ -80,6 +85,13 @@ const Add = ({
             
             try {
               console.log("🔵 Calling addItem...");
+              console.log("🔍 Individual parameters:", {
+                wixClient: !!wixClient,
+                productId: productId,
+                variantId: variantId,
+                quantity: quantity,
+                selectedOptions: selectedOptions
+              });
               await addItem(wixClient, productId, variantId, quantity, selectedOptions);
               console.log("✅ addItem completed successfully");
             } catch (error) {

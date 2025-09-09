@@ -15,6 +15,8 @@ type CartState = {
     selectedOptions?: { [key: string]: string }
   ) => void;
   removeItem: (wixClient: WixClient, itemId: string) => void;
+  updateItemQuantity: (wixClient: WixClient, itemId: string, newQuantity: number) => void;
+  calculateSubtotal: () => string;
 };
 
 export const useCartStore = create<CartState>((set) => ({
@@ -22,24 +24,87 @@ export const useCartStore = create<CartState>((set) => ({
   isLoading: true,
   counter: 0,
   getCart: async (wixClient) => {
+    if (!wixClient?.currentCart) {
+      console.warn("WixClient or currentCart not available, skipping cart fetch");
+      set((prev) => ({ 
+        ...prev, 
+        isLoading: false,
+        cart: {
+          lineItems: [],
+        } as currentCart.Cart,
+        counter: 0
+      }));
+      return;
+    }
+
     try {
       const cart = await wixClient.currentCart.getCurrentCart();
+      
+      // Use the cart as is from Wix API - it has the proper structure
+      const safeCart = cart || ({
+        lineItems: [],
+      } as currentCart.Cart);
+
       set({
-        cart: cart || ({} as currentCart.Cart),
+        cart: safeCart,
         isLoading: false,
-        counter: cart?.lineItems?.length || 0,
+        counter: safeCart.lineItems?.length || 0,
       });
     } catch (err) {
-      set((prev) => ({ ...prev, isLoading: false }));
+      console.error("Error getting cart:", err);
+      set((prev) => ({ 
+        ...prev, 
+        isLoading: false,
+        cart: {
+          lineItems: [],
+        } as currentCart.Cart
+      }));
     }
   },
   addItem: async (wixClient, productId, variantId, quantity, selectedOptions) => {
-    console.log("🛒 addItem function called with:", {
-      productId,
-      variantId,
-      quantity,
-      selectedOptions
+    console.log("🛒 addItem function called");
+    console.log("📋 Parameter check:", {
+      wixClientType: typeof wixClient,
+      productIdType: typeof productId,
+      productIdValue: productId,
+      variantIdType: typeof variantId,
+      variantIdValue: variantId,
+      quantityType: typeof quantity,
+      quantityValue: quantity,
+      selectedOptionsType: typeof selectedOptions,
+      selectedOptionsValue: selectedOptions
     });
+    
+    console.log("🔍 WixClient debug:", {
+      wixClient,
+      hasCurrentCart: !!wixClient?.currentCart,
+      hasAddToCurrentCart: !!wixClient?.currentCart?.addToCurrentCart
+    });
+
+    // Validate parameters
+    if (!wixClient) {
+      console.error("❌ WixClient is undefined!");
+      set((state) => ({ ...state, isLoading: false }));
+      throw new Error("WixClient is not available");
+    }
+
+    if (!wixClient.currentCart) {
+      console.error("❌ WixClient.currentCart is undefined!");
+      set((state) => ({ ...state, isLoading: false }));
+      throw new Error("WixClient.currentCart is not available");
+    }
+
+    if (typeof productId !== 'string' || !productId) {
+      console.error("❌ Invalid productId:", productId);
+      set((state) => ({ ...state, isLoading: false }));
+      throw new Error("Invalid productId");
+    }
+
+    if (typeof quantity !== 'number' || quantity <= 0) {
+      console.error("❌ Invalid quantity:", quantity);
+      set((state) => ({ ...state, isLoading: false }));
+      throw new Error("Invalid quantity");
+    }
     
     set((state) => ({ ...state, isLoading: true }));
     try {
@@ -114,6 +179,55 @@ export const useCartStore = create<CartState>((set) => ({
       console.error("Error removing item from cart:", error);
       set((state) => ({ ...state, isLoading: false }));
       throw error;
+    }
+  },
+  updateItemQuantity: async (wixClient, itemId, newQuantity) => {
+    if (newQuantity <= 0) {
+      // If quantity is 0 or negative, remove the item instead
+      return useCartStore.getState().removeItem(wixClient, itemId);
+    }
+
+    set((state) => ({ ...state, isLoading: true }));
+    try {
+      const response = await wixClient.currentCart.updateCurrentCartLineItemQuantity([{
+        _id: itemId,
+        quantity: newQuantity
+      }]);
+
+      set({
+        cart: response.cart,
+        counter: response.cart?.lineItems?.length || 0,
+        isLoading: false,
+      });
+    } catch (error) {
+      console.error("Error updating item quantity:", error);
+      set((state) => ({ ...state, isLoading: false }));
+      throw error;
+    }
+  },
+  calculateSubtotal: (): string => {
+    // Use get() to access current state without TypeScript issues
+    const { cart } = useCartStore.getState();
+    
+    if (!cart?.lineItems || cart.lineItems.length === 0) {
+      return "0.00";
+    }
+
+    try {
+      const total = cart.lineItems.reduce((total: number, item: any) => {
+        // Handle both string and number values for price amount
+        const itemPrice = typeof item.price?.amount === 'string' 
+          ? parseFloat(item.price.amount) || 0 
+          : Number(item.price?.amount) || 0;
+        const itemQuantity = Number(item.quantity) || 1;
+        return total + (itemPrice * itemQuantity);
+      }, 0);
+      
+      // Ensure we return a properly formatted string
+      return isNaN(total) ? "0.00" : total.toFixed(2);
+    } catch (error) {
+      console.error("Error calculating subtotal:", error);
+      return "0.00";
     }
   },
 }));

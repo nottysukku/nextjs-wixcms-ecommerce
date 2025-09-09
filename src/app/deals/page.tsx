@@ -1,4 +1,5 @@
 import ProductList from "@/components/ProductList";
+import AnimatedCountdown from "@/components/AnimatedCountdown";
 import { wixClientServer } from "@/lib/wixClientServer";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -33,32 +34,8 @@ const DealsPage = async ({ searchParams }: { searchParams: any }) => {
         </div>
       </div>
 
-      {/* Countdown Timer */}
-      <div className="bg-white dark:bg-secondary-800 rounded-2xl shadow-lg p-6 mb-12 border border-gray-200 dark:border-gray-700">
-        <div className="text-center">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
-            ⏰ Sale Ends Soon!
-          </h3>
-          <div className="flex justify-center space-x-4 md:space-x-8">
-            <div className="bg-primary-100 dark:bg-primary-900/30 rounded-lg p-4 min-w-16">
-              <div className="text-2xl md:text-3xl font-bold text-primary-600 dark:text-primary-400">23</div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">DAYS</div>
-            </div>
-            <div className="bg-primary-100 dark:bg-primary-900/30 rounded-lg p-4 min-w-16">
-              <div className="text-2xl md:text-3xl font-bold text-primary-600 dark:text-primary-400">14</div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">HOURS</div>
-            </div>
-            <div className="bg-primary-100 dark:bg-primary-900/30 rounded-lg p-4 min-w-16">
-              <div className="text-2xl md:text-3xl font-bold text-primary-600 dark:text-primary-400">27</div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">MINS</div>
-            </div>
-            <div className="bg-primary-100 dark:bg-primary-900/30 rounded-lg p-4 min-w-16">
-              <div className="text-2xl md:text-3xl font-bold text-primary-600 dark:text-primary-400">42</div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">SECS</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Animated Countdown Timer */}
+      <AnimatedCountdown className="mb-12" />
 
       {/* Deal Categories */}
       <div className="mb-12">
