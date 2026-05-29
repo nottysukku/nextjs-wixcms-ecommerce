@@ -143,7 +143,7 @@ const AnimatedCountdown: React.FC<AnimatedCountdownProps> = ({
         <div className="text-center">
           <div className="text-4xl mb-2">🎉</div>
           <h3 className="text-xl font-bold mb-2">Sale Has Ended!</h3>
-          <p className="text-sm opacity-90">Don't worry, we'll have more amazing deals soon!</p>
+          <p className="text-sm opacity-90">Don&apos;t worry, we&apos;ll have more amazing deals soon!</p>
         </div>
       </div>
     );

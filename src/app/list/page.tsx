@@ -79,7 +79,7 @@ const ListPage = async ({ searchParams }: { searchParams: any }) => {
             {cat?.collection?.name ? `${cat.collection.name} Collection` : "All Products"}
           </h2>
           <div className="text-sm text-gray-500 dark:text-gray-400">
-            Showing results for "{cat?.collection?.name || "All Products"}"
+            Showing results for &quot;{cat?.collection?.name || "All Products"}&quot;
           </div>
         </div>
         

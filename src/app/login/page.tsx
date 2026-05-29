@@ -501,7 +501,7 @@ const LoginPage = () => {
                   🔄 Switch to Login Instead
                 </button>
                 <p className="text-xs opacity-75">
-                  If you don't have an account yet, you can register directly on the Wix site or ask the admin to disable CAPTCHA completely.
+                  If you don&apos;t have an account yet, you can register directly on the Wix site or ask the admin to disable CAPTCHA completely.
                 </p>
               </div>
             )}
