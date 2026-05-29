@@ -9,6 +9,7 @@ import CursorStardust from "@/components/CursorStardust";
 import { WixClientContextProvider } from "@/context/wixContext";
 import { ThemeProvider } from "@/context/themeContext";
 import { LoadingProvider } from "@/context/loadingContext";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -40,13 +41,15 @@ export default function RootLayout({
             <LoadingProvider>
               <CursorStardust />
               <LoadingBar />
-              <PageTransition>
-                <Navbar />
-                <div className="pt-20">
-                  {children}
-                </div>
-                <Footer />
-              </PageTransition>
+              <Suspense fallback={null}>
+                <PageTransition>
+                  <Navbar />
+                  <div className="pt-20">
+                    {children}
+                  </div>
+                  <Footer />
+                </PageTransition>
+              </Suspense>
             </LoadingProvider>
           </WixClientContextProvider>
         </ThemeProvider>
