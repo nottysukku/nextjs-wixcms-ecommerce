@@ -174,22 +174,23 @@ const LoginPage = () => {
           break;
           
         case LoginState.FAILURE:
-          console.log("Authentication failed with error code:", response.errorCode);
+          const errorCode = response.errorCode as string;
+          console.log("Authentication failed with error code:", errorCode);
           if (
-            response.errorCode === "invalidEmail" ||
-            response.errorCode === "invalidPassword"
+            errorCode === "invalidEmail" ||
+            errorCode === "invalidPassword"
           ) {
             setError("Invalid email or password!");
-          } else if (response.errorCode === "emailAlreadyExists") {
+          } else if (errorCode === "emailAlreadyExists") {
             setError("Email already exists! Please try logging in instead.");
-          } else if (response.errorCode === "resetPassword") {
+          } else if (errorCode === "resetPassword") {
             setError("You need to reset your password!");
-          } else if (response.errorCode === "invalidUser") {
+          } else if (errorCode === "invalidUser") {
             setError("User account not found. Please check your email or register.");
-          } else if (response.errorCode === "missingCaptchaToken") {
+          } else if (errorCode === "missingCaptchaToken") {
             setError("Registration requires CAPTCHA verification. Please check your Wix site settings: Dashboard > Settings > Members Area > Security > Disable 'Enable reCAPTCHA for registration'");
           } else {
-            setError(`Authentication failed: ${response.errorCode || "Unknown error"}`);
+            setError(`Authentication failed: ${errorCode || "Unknown error"}`);
           }
           break;
           
@@ -203,8 +204,8 @@ const LoginPage = () => {
           break;
           
         default:
-          if (response?.errorCode) {
-            setError(`Authentication error: ${response.errorCode}`);
+          if ((response as any)?.errorCode) {
+            setError(`Authentication error: ${(response as any).errorCode}`);
           } else {
             setError("Unexpected response from authentication service.");
           }
