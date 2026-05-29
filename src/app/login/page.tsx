@@ -121,7 +121,6 @@ const LoginPage = () => {
               password,
               profile: { 
                 nickname: username.trim(),
-                slug: username.trim().toLowerCase().replace(/\s+/g, '-')
               },
             });
             console.log("✅ Registration response (without CAPTCHA):", response);
@@ -144,7 +143,6 @@ const LoginPage = () => {
                   password,
                   profile: { 
                     nickname: username.trim(),
-                    slug: username.trim().toLowerCase().replace(/\s+/g, '-')
                   },
                   captchaToken: "",
                 });
@@ -160,7 +158,6 @@ const LoginPage = () => {
                     password,
                     profile: { 
                       nickname: username.trim(),
-                      slug: username.trim().toLowerCase().replace(/\s+/g, '-')
                     },
                     captchaToken: "bypass-dev-token",
                   });
@@ -179,7 +176,6 @@ const LoginPage = () => {
                       password,
                       profile: { 
                         nickname: username.trim(),
-                        slug: username.trim().toLowerCase().replace(/\s+/g, '-')
                       },
                       captchaToken: "test-token-" + Date.now(),
                     });
