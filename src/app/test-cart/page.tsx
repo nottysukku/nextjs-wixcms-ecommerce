@@ -26,36 +26,38 @@ const CartPage = () => {
       });
 
       console.log("Checkout data:", checkoutData);
-      
-      // Handle different response formats
-      if (checkoutData?.checkoutUrl) {
-        // Direct checkout URL
-        window.location.href = checkoutData.checkoutUrl;
-      } else if (checkoutData?.checkoutId) {
-        // Construct checkout URL using checkoutId
-        const checkoutUrl = `https://www.wix.com/checkout/start?checkoutId=${checkoutData.checkoutId}`;
-        console.log("Constructed checkout URL:", checkoutUrl);
-        window.location.href = checkoutUrl;
-      } else if (checkoutData?.redirects?.checkoutUrl) {
-        window.location.href = checkoutData.redirects.checkoutUrl;
-      } else {
-        // Try to use Wix redirect session
-        try {
-          const redirectSession = await wixClient.redirects.createRedirectSession({
-            ecomCheckout: {
-              checkoutId: checkoutData.checkoutId
-            }
-          });
-          
-          if (redirectSession?.fullUrl) {
-            window.location.href = redirectSession.fullUrl;
-          } else {
-            throw new Error("No redirect URL in session");
+
+      const checkoutId = checkoutData?._id;
+      if (!checkoutId) {
+        throw new Error("No checkout ID returned from Wix currentCart");
+      }
+
+      // Try to use Wix redirect session
+      try {
+        const redirectSession = await wixClient.redirects.createRedirectSession({
+          ecomCheckout: {
+            checkoutId: checkoutId
+          },
+          callbacks: {
+            postFlowUrl: window.location.origin
           }
-        } catch (redirectError) {
-          console.error("Redirect session error:", redirectError);
-          alert("Unable to proceed to checkout. Please try again or contact support.");
+        });
+        
+        console.log("Redirect session response:", redirectSession);
+
+        if (redirectSession?.redirectSession?.fullUrl) {
+          window.location.href = redirectSession.redirectSession.fullUrl;
+        } else if ((redirectSession as any)?.fullUrl) {
+          window.location.href = (redirectSession as any).fullUrl;
+        } else {
+          throw new Error("No redirect URL in session");
         }
+      } catch (redirectError) {
+        console.error("Redirect session error:", redirectError);
+        // Fallback: Construct standard checkout URL if redirects service fails
+        const fallbackUrl = `https://www.wix.com/checkout/start?checkoutId=${checkoutId}`;
+        console.log("Attempting fallback checkout URL:", fallbackUrl);
+        window.location.href = fallbackUrl;
       }
     } catch (err) {
       console.error("Checkout error:", err);

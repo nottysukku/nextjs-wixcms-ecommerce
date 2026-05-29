@@ -461,6 +461,27 @@ const LoginPage = () => {
             buttonTitle
           )}
         </button>
+        
+        {(mode === MODE.LOGIN || mode === MODE.REGISTER) && (
+          <>
+            <div className="relative flex py-2 items-center">
+              <div className="flex-grow border-t border-gray-300 dark:border-gray-600"></div>
+              <span className="flex-shrink mx-4 text-gray-500 dark:text-gray-400 text-xs uppercase">Or</span>
+              <div className="flex-grow border-t border-gray-300 dark:border-gray-600"></div>
+            </div>
+
+            <button
+              type="button"
+              disabled={isLoading}
+              onClick={() => {
+                router.push("/");
+              }}
+              className="border-2 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 p-4 rounded-md font-semibold transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-[1.02]"
+            >
+              Continue as Guest
+            </button>
+          </>
+        )}
         {error && (
           <div className="text-red-600 dark:text-red-400 text-sm text-center p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
             {error}

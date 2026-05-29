@@ -98,10 +98,10 @@ const Add = ({
               console.error("❌ addItem failed:", error);
             }
           }}
-          disabled={isLoading}
-          className="w-36 text-sm rounded-3xl ring-1 ring-sukku text-black bg-white hover:bg-sukku hover:text-white disabled:cursor-not-allowed disabled:bg-pink-200 disabled:ring-0 disabled:text-white transition-colors duration-200"
+          disabled={isLoading || stockNumber < 1}
+          className="w-36 text-sm rounded-3xl ring-1 ring-sukku text-black bg-white hover:bg-sukku hover:text-white disabled:cursor-not-allowed disabled:bg-gray-200 disabled:ring-0 disabled:text-gray-400 transition-colors duration-200 font-medium"
         >
-          Add to Cart
+          {stockNumber < 1 ? "Out of Stock" : "Add to Cart"}
         </button>
       </div>
     </div>
