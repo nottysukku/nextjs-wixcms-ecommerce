@@ -3,6 +3,7 @@
 import { useCartStore } from "@/hooks/useCartStore";
 import { useWixClient } from "@/hooks/useWixClient";
 import { useState } from "react";
+import { useToast } from "@/context/toastContext";
 
 const Add = ({
   productId,
@@ -16,6 +17,7 @@ const Add = ({
   selectedOptions?: { [key: string]: string };
 }) => {
   const [quantity, setQuantity] = useState(1);
+  const { addToast } = useToast();
 
   // // TEMPORARY
   // const stock = 4;
@@ -85,17 +87,12 @@ const Add = ({
             
             try {
               console.log("🔵 Calling addItem...");
-              console.log("🔍 Individual parameters:", {
-                wixClient: !!wixClient,
-                productId: productId,
-                variantId: variantId,
-                quantity: quantity,
-                selectedOptions: selectedOptions
-              });
               await addItem(wixClient, productId, variantId, quantity, selectedOptions);
               console.log("✅ addItem completed successfully");
+              addToast("Product added to cart successfully!", "success");
             } catch (error) {
               console.error("❌ addItem failed:", error);
+              addToast("Failed to add product to cart.", "error");
             }
           }}
           disabled={isLoading || stockNumber < 1}

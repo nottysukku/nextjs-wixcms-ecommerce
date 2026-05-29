@@ -73,25 +73,25 @@ const CategoryListClient = ({ categories }: { categories: any[] }) => {
         className="overflow-x-scroll scrollbar-hide"
         onScroll={checkScrollButtons}
       >
-        <div className="flex gap-4 md:gap-8 pb-2">
+        <div className="flex gap-3 sm:gap-4 md:gap-8 pb-3">
           {categories.map((item) => (
             <Link
               href={`/list?cat=${item.slug}`}
-              className="flex-shrink-0 w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 group"
+              className="flex-shrink-0 w-24 sm:w-1/2 lg:w-1/4 xl:w-1/6 group flex flex-col items-center"
               key={item._id}
             >
-              <div className="relative bg-slate-100 w-full h-96 rounded-lg overflow-hidden">
+              <div className="relative bg-slate-100 w-20 h-20 sm:w-full sm:h-96 rounded-full sm:rounded-lg overflow-hidden border-2 border-secondary-100 dark:border-secondary-800 shadow-sm sm:shadow-none group-hover:border-primary-500 dark:group-hover:border-primary-400 transition-all duration-300">
                 <Image
                   src={item.media?.mainMedia?.image?.url || "/category.png"}
                   alt={item.name || "Category"}
                   fill
-                  sizes="20vw"
+                  sizes="(max-width: 640px) 80px, 20vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 {/* Overlay on hover */}
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300"></div>
               </div>
-              <h1 className="mt-4 font-light text-xl tracking-wide text-center group-hover:text-gray-600 transition-colors">
+              <h1 className="mt-2 sm:mt-4 font-semibold sm:font-light text-xs sm:text-xl tracking-wide text-center group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-1 w-full px-1">
                 {item.name}
               </h1>
             </Link>

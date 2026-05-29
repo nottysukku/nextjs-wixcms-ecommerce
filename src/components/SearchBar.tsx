@@ -19,7 +19,7 @@ const SearchBar = () => {
 
   return (
     <form
-      className="flex items-center justify-between gap-4 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-3 rounded-lg flex-1 hover:border-primary-300 dark:hover:border-primary-600 transition-colors duration-200"
+      className="flex items-center justify-between gap-2 md:gap-4 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-2 md:p-3 rounded-lg flex-1 hover:border-primary-300 dark:hover:border-primary-600 transition-colors duration-200"
       onSubmit={handleSearch}
     >
       <input

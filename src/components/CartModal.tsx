@@ -1,11 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCartStore } from "@/hooks/useCartStore";
 import { media as wixMedia } from "@wix/sdk";
 import { useWixClient } from "@/hooks/useWixClient";
 import { currentCart } from "@wix/ecom";
+import { loadRazorpayScript } from "@/lib/loadRazorpay";
 
 const CartModal = () => {
   // TEMPORARY
@@ -13,6 +15,8 @@ const CartModal = () => {
 
   const wixClient = useWixClient();
   const { cart, isLoading, removeItem, updateItemQuantity, calculateSubtotal } = useCartStore();
+  const [isRazorpayLoading, setIsRazorpayLoading] = useState(false);
+  const [isCODLoading, setIsCODLoading] = useState(false);
 
   const handleCheckout = async () => {
     if (!wixClient) {
@@ -62,6 +66,230 @@ const CartModal = () => {
     } catch (err: any) {
       console.error("Checkout error:", err);
       alert(`Checkout failed: ${err?.message || "Please try again"}`);
+    }
+  };
+
+  const handleRazorpayCheckout = async () => {
+    setIsRazorpayLoading(true);
+    try {
+      // 1. Enforce login with actual email
+      if (!wixClient || !wixClient.auth.loggedIn()) {
+        alert("Please log in with your actual email first to proceed with checkout and receive email updates.");
+        window.location.href = "/login";
+        setIsRazorpayLoading(false);
+        return;
+      }
+
+      // 2. Fetch customer member details
+      const memberRes = await wixClient.members.getCurrentMember({
+        fieldsets: ["FULL" as any],
+      });
+      const customerEmail = memberRes.member?.loginEmail || memberRes.member?.contact?.emails?.[0];
+      const firstName = memberRes.member?.contact?.firstName || memberRes.member?.profile?.nickname || "Valued";
+      const lastName = memberRes.member?.contact?.lastName || "Customer";
+      const fullName = `${firstName} ${lastName}`.trim();
+
+      if (!customerEmail) {
+        alert("Could not retrieve your actual email address. Please update your profile or log in again.");
+        setIsRazorpayLoading(false);
+        return;
+      }
+
+      const subtotalStr = calculateSubtotal();
+      const amountInINR = parseFloat(subtotalStr);
+      const amountInPaise = Math.round(amountInINR * 100);
+
+      if (isNaN(amountInPaise) || amountInPaise < 100) {
+        alert("Minimum checkout amount is ₹1.00 (100 paise)");
+        setIsRazorpayLoading(false);
+        return;
+      }
+
+      const scriptLoaded = await loadRazorpayScript();
+      if (!scriptLoaded) {
+        alert("Failed to load Razorpay Checkout SDK. Please check your internet connection.");
+        setIsRazorpayLoading(false);
+        return;
+      }
+
+      const response = await fetch("/api/create-order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: amountInPaise,
+          currency: "INR",
+          receipt: `rcpt_modal_${Date.now()}`
+        }),
+      });
+
+      const orderData = await response.json();
+
+      if (!response.ok) {
+        throw new Error(orderData.error || "Failed to create order");
+      }
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "Nottysukkus",
+        description: "Secure Checkout Payment",
+        image: "/favicon.ico",
+        order_id: orderData.order_id,
+        handler: async function (response: any) {
+          try {
+            // Calculate dynamic delivery ETA: 3 business days from now
+            const deliveryDays = 3;
+            const etaDate = new Date();
+            etaDate.setDate(etaDate.getDate() + deliveryDays);
+            const etaString = etaDate.toLocaleDateString("en-IN", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            });
+
+            const verifyResponse = await fetch("/api/verify-payment", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                email: customerEmail,
+                name: fullName,
+                cartItems: cart.lineItems || [],
+                total: subtotalStr,
+                eta: etaString
+              }),
+            });
+
+            const verifyResult = await verifyResponse.json();
+
+            if (verifyResponse.ok && verifyResult.verified) {
+              if (verifyResult.previewUrl) {
+                console.log("📧 Sandbox Test Email Preview URL:", verifyResult.previewUrl);
+                alert(`🎉 Payment Successful! \n\nAn order confirmation email has been sent to: ${customerEmail}. \n\nYou can preview this sandbox email in your browser by clicking OK.`);
+                window.open(verifyResult.previewUrl, "_blank");
+              } else {
+                alert(`🎉 Payment Successful! Order confirmation email has been sent to: ${customerEmail}`);
+              }
+              window.location.href = `/success?orderId=${response.razorpay_order_id}`;
+            } else {
+              alert(`Payment verification failed: ${verifyResult.message || "Invalid signature"}`);
+            }
+          } catch (err: any) {
+            console.error("Verification error:", err);
+            alert("An error occurred while verifying your payment.");
+          }
+        },
+        prefill: {
+          name: fullName,
+          email: customerEmail,
+          contact: memberRes.member?.contact?.phones?.[0] || "9999999999",
+        },
+        theme: {
+          color: "#4f46e5",
+        },
+        modal: {
+          ondismiss: function () {
+            console.log("Razorpay Checkout Modal dismissed");
+            alert("Payment was cancelled or closed.");
+          },
+        },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      
+      rzp.on("payment.failed", function (response: any) {
+        alert(`Payment failed: ${response.error.description || "Something went wrong"}`);
+        console.error("Payment failure details:", response.error);
+      });
+
+      rzp.open();
+    } catch (err: any) {
+      console.error("Razorpay integration error:", err);
+      alert(`Checkout failed: ${err.message || "Something went wrong"}`);
+    } finally {
+      setIsRazorpayLoading(false);
+    }
+  };
+
+  const handleCODOrder = async () => {
+    setIsCODLoading(true);
+    try {
+      // 1. Enforce login
+      if (!wixClient || !wixClient.auth.loggedIn()) {
+        alert("Please log in with your actual email first to place a Cash on Delivery order.");
+        window.location.href = "/login";
+        setIsCODLoading(false);
+        return;
+      }
+
+      // 2. Fetch customer member details
+      const memberRes = await wixClient.members.getCurrentMember({
+        fieldsets: ["FULL" as any],
+      });
+      const customerEmail = memberRes.member?.loginEmail || memberRes.member?.contact?.emails?.[0];
+      const firstName = memberRes.member?.contact?.firstName || memberRes.member?.profile?.nickname || "Valued";
+      const lastName = memberRes.member?.contact?.lastName || "Customer";
+      const fullName = `${firstName} ${lastName}`.trim();
+
+      if (!customerEmail) {
+        alert("Could not retrieve your email address. Please update your profile or log in again.");
+        setIsCODLoading(false);
+        return;
+      }
+
+      const subtotalStr = calculateSubtotal();
+
+      // Calculate dynamic delivery ETA: 5 business days for COD
+      const deliveryDays = 5;
+      const etaDate = new Date();
+      etaDate.setDate(etaDate.getDate() + deliveryDays);
+      const etaString = etaDate.toLocaleDateString("en-IN", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+
+      const response = await fetch("/api/cod-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: customerEmail,
+          name: fullName,
+          cartItems: cart.lineItems || [],
+          total: subtotalStr,
+          eta: etaString,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to place COD order");
+      }
+
+      if (result.previewUrl) {
+        console.log("📧 COD Sandbox Email Preview:", result.previewUrl);
+        alert(`🎉 Cash on Delivery Order Placed! \n\nOrder ID: ${result.orderId}\nConfirmation email sent to: ${customerEmail}\n\nClick OK to preview the email.`);
+        window.open(result.previewUrl, "_blank");
+      } else {
+        alert(`🎉 Cash on Delivery Order Placed! \n\nOrder ID: ${result.orderId}\nConfirmation email sent to: ${customerEmail}`);
+      }
+
+      window.location.href = `/success?orderId=${result.orderId}`;
+    } catch (err: any) {
+      console.error("COD order error:", err);
+      alert(`Order failed: ${err.message || "Something went wrong"}`);
+    } finally {
+      setIsCODLoading(false);
     }
   };
 
@@ -163,18 +391,34 @@ const CartModal = () => {
             <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
               Shipping and taxes calculated at checkout.
             </p>
-            <div className="flex gap-3">
-              <Link href="/test-cart" className="flex-1">
-                <button className="w-full rounded-lg py-3 px-4 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium">
-                  View Cart
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-2">
+                <Link href="/test-cart" className="flex-1">
+                  <button className="w-full rounded-lg py-2 px-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium text-sm">
+                    View Cart
+                  </button>
+                </Link>
+                <button
+                  className="flex-1 rounded-lg py-2 px-3 bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-400 text-white disabled:cursor-not-allowed disabled:opacity-50 transition-colors font-medium text-sm"
+                  disabled={isLoading || !wixClient}
+                  onClick={handleCheckout}
+                >
+                  {isLoading ? "Processing..." : "Wix Checkout"}
                 </button>
-              </Link>
+              </div>
               <button
-                className="flex-1 rounded-lg py-3 px-4 bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-400 text-white disabled:cursor-not-allowed disabled:opacity-50 transition-colors font-medium"
-                disabled={isLoading || !wixClient}
-                onClick={handleCheckout}
+                className="w-full rounded-lg py-2.5 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isLoading || isRazorpayLoading || !cart.lineItems || cart.lineItems.length === 0}
+                onClick={handleRazorpayCheckout}
               >
-                {isLoading ? "Processing..." : "Checkout"}
+                {isRazorpayLoading ? "Loading..." : "💳 Pay Securely with Razorpay"}
+              </button>
+              <button
+                className="w-full rounded-lg py-2.5 px-4 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-semibold text-sm transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isLoading || isCODLoading || !cart.lineItems || cart.lineItems.length === 0}
+                onClick={handleCODOrder}
+              >
+                {isCODLoading ? "Placing Order..." : "📦 Cash on Delivery"}
               </button>
             </div>
           </div>
@@ -185,3 +429,4 @@ const CartModal = () => {
 };
 
 export default CartModal;
+

@@ -12,6 +12,12 @@ const GoogleMap = ({ className = "" }: GoogleMapProps) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+    if (!apiKey || apiKey === "your_google_maps_api_key_here") {
+      setError("Google Maps API key is not configured. Please add NEXT_PUBLIC_GOOGLE_MAPS_API_KEY to your environment variables.");
+      return;
+    }
+
     // Check if Google Maps API is already loaded
     if (window.google && window.google.maps) {
       initializeMap();
@@ -20,7 +26,7 @@ const GoogleMap = ({ className = "" }: GoogleMapProps) => {
 
     // Load Google Maps API
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
     script.async = true;
     script.defer = true;
     

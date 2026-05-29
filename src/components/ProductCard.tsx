@@ -7,10 +7,12 @@ import DOMPurify from "isomorphic-dompurify";
 import { useCartStore } from "@/hooks/useCartStore";
 import { useWixClient } from "@/hooks/useWixClient";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/context/toastContext";
 
 const ProductCard = ({ product }: { product: products.Product }) => {
   const wixClient = useWixClient();
   const { addItem, isLoading } = useCartStore();
+  const { addToast } = useToast();
   const router = useRouter();
 
   // Check if product has variants that require user selection
@@ -52,17 +54,22 @@ const ProductCard = ({ product }: { product: products.Product }) => {
 
   const variantInfo = getVariantInfo();
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent link navigation
     
     if (!variantInfo.canAddToCart) return;
     
-    addItem(
-      wixClient, 
-      product._id!, 
-      variantInfo.variantId, 
-      1
-    );
+    try {
+      await addItem(
+        wixClient, 
+        product._id!, 
+        variantInfo.variantId, 
+        1
+      );
+      addToast(`"${product.name}" added to cart successfully!`, "success");
+    } catch (err) {
+      addToast("Failed to add product to cart.", "error");
+    }
   };
 
   const handleSelectOptions = (e: React.MouseEvent) => {
@@ -72,15 +79,15 @@ const ProductCard = ({ product }: { product: products.Product }) => {
 
   return (
     <div
-      className="w-full flex flex-col gap-4 sm:w-[45%] lg:w-[22%] group"
+      className="w-full flex flex-col gap-2 sm:gap-4 group"
       key={product._id}
     >
-      <Link href={"/" + product.slug} className="relative w-full h-80 bg-gray-50 dark:bg-gray-800 rounded-lg overflow-hidden">
+      <Link href={"/" + product.slug} className="relative w-full h-48 sm:h-80 bg-gray-50 dark:bg-gray-800 rounded-lg overflow-hidden border border-secondary-100 dark:border-secondary-800/40">
         <Image
           src={product.media?.mainMedia?.image?.url || "/product.png"}
           alt={product.name || "Product image"}
           fill
-          sizes="25vw"
+          sizes="(max-width: 640px) 50vw, 25vw"
           className="absolute object-cover z-10 hover:opacity-0 transition-opacity easy duration-500 group-hover:scale-105"
         />
         {product.media?.items && (
@@ -88,24 +95,24 @@ const ProductCard = ({ product }: { product: products.Product }) => {
             src={product.media?.items[1]?.image?.url || "/product.png"}
             alt={product.name || "Product image"}
             fill
-            sizes="25vw"
+            sizes="(max-width: 640px) 50vw, 25vw"
             className="absolute object-cover"
           />
         )}
       </Link>
-      <div className="flex justify-between items-start">
-        <Link href={"/" + product.slug}>
-          <span className="font-medium text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+      <div className="flex flex-col sm:flex-row sm:justify-between items-start gap-1">
+        <Link href={"/" + product.slug} className="max-w-[75%] sm:max-w-none">
+          <span className="text-xs sm:text-base font-semibold sm:font-medium text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-1">
             {product.name}
           </span>
         </Link>
-        <span className="font-semibold text-primary-600 dark:text-primary-400">
+        <span className="text-sm sm:text-base font-bold text-primary-600 dark:text-primary-400 whitespace-nowrap">
           ₹{product.price?.price}
         </span>
       </div>
       {product.additionalInfoSections && (
         <div
-          className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2"
+          className="hidden sm:block text-sm text-gray-600 dark:text-gray-400 line-clamp-2"
           dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(
               product.additionalInfoSections.find(
@@ -116,11 +123,11 @@ const ProductCard = ({ product }: { product: products.Product }) => {
         ></div>
       )}
       {/* Smart Add to Cart Button */}
-      <div className="mt-auto">
+      <div className="mt-auto pt-1">
         {hasSelectableVariants && !variantInfo.canAddToCart ? (
           <button 
             onClick={handleSelectOptions}
-            className="w-full rounded-lg ring-1 ring-primary-600 text-primary-600 dark:ring-primary-400 dark:text-primary-400 py-2 px-4 text-xs hover:bg-primary-600 hover:text-white dark:hover:bg-primary-400 dark:hover:text-gray-900 transition-all duration-200 font-medium"
+            className="w-full rounded-lg ring-1 ring-primary-600 text-primary-600 dark:ring-primary-400 dark:text-primary-400 py-1.5 px-3 sm:py-2 sm:px-4 text-[10px] sm:text-xs hover:bg-primary-600 hover:text-white dark:hover:bg-primary-400 dark:hover:text-gray-900 transition-all duration-200 font-semibold sm:font-medium"
           >
             Select Options
           </button>
@@ -128,7 +135,7 @@ const ProductCard = ({ product }: { product: products.Product }) => {
           <button 
             onClick={handleAddToCart}
             disabled={isLoading || variantInfo.stockNumber < 1}
-            className="w-full rounded-lg ring-1 ring-primary-600 text-primary-600 dark:ring-primary-400 dark:text-primary-400 py-2 px-4 text-xs hover:bg-primary-600 hover:text-white dark:hover:bg-primary-400 dark:hover:text-gray-900 transition-all duration-200 font-medium disabled:cursor-not-allowed disabled:opacity-50"
+            className="w-full rounded-lg ring-1 ring-primary-600 text-primary-600 dark:ring-primary-400 dark:text-primary-400 py-1.5 px-3 sm:py-2 sm:px-4 text-[10px] sm:text-xs hover:bg-primary-600 hover:text-white dark:hover:bg-primary-400 dark:hover:text-gray-900 transition-all duration-200 font-semibold sm:font-medium disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isLoading ? "Adding..." : 
              variantInfo.stockNumber < 1 ? "Out of Stock" : 

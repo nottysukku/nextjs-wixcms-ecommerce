@@ -9,6 +9,7 @@ import CursorStardust from "@/components/CursorStardust";
 import { WixClientContextProvider } from "@/context/wixContext";
 import { ThemeProvider } from "@/context/themeContext";
 import { LoadingProvider } from "@/context/loadingContext";
+import { ToastProvider } from "@/context/toastContext";
 import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -37,21 +38,23 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} bg-white dark:bg-secondary-900 text-secondary-900 dark:text-secondary-100 transition-colors duration-300`}>
         <ThemeProvider>
-          <WixClientContextProvider>
-            <LoadingProvider>
-              <CursorStardust />
-              <LoadingBar />
-              <Suspense fallback={null}>
-                <PageTransition>
-                  <Navbar />
-                  <div className="pt-20">
-                    {children}
-                  </div>
-                  <Footer />
-                </PageTransition>
-              </Suspense>
-            </LoadingProvider>
-          </WixClientContextProvider>
+          <ToastProvider>
+            <WixClientContextProvider>
+              <LoadingProvider>
+                <CursorStardust />
+                <LoadingBar />
+                <Suspense fallback={null}>
+                  <PageTransition>
+                    <Navbar />
+                    <div className="pt-28 md:pt-20">
+                      {children}
+                    </div>
+                    <Footer />
+                  </PageTransition>
+                </Suspense>
+              </LoadingProvider>
+            </WixClientContextProvider>
+          </ToastProvider>
         </ThemeProvider>
       </body>
     </html>

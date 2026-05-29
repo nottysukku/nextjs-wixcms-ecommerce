@@ -79,23 +79,25 @@ const ProductList = async ({
     const res = await productQuery.find();
     
     return (
-      <div className="mt-12 flex gap-x-8 gap-y-16 justify-between flex-wrap">
+      <div className="mt-12 grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-8 sm:gap-y-16 md:grid-cols-3 lg:grid-cols-4">
         {res.items.map((product: products.Product) => (
           <ProductCard key={product._id} product={product} />
         ))}
         {searchParams?.cat || searchParams?.name ? (
-          <Pagination
-            currentPage={res.currentPage || 0}
-            hasPrev={res.hasPrev()}
-            hasNext={res.hasNext()}
-          />
+          <div className="col-span-full mt-4 flex justify-center">
+            <Pagination
+              currentPage={res.currentPage || 0}
+              hasPrev={res.hasPrev()}
+              hasNext={res.hasNext()}
+            />
+          </div>
         ) : null}
       </div>
   );
   } catch (error) {
     console.error("Error fetching products:", error);
     return (
-      <div className="mt-12 flex gap-x-8 gap-y-16 justify-between flex-wrap">
+      <div className="mt-12 grid grid-cols-1">
         <div className="w-full text-center py-12 bg-red-50 dark:bg-red-950/20 rounded-lg border border-red-200 dark:border-red-800">
           <p className="text-red-600 dark:text-red-400 font-medium">Error loading products. Please try again later.</p>
         </div>

@@ -111,7 +111,7 @@ const NavIcons = () => {
             height={22} 
             className="dark:invert dark:brightness-0 dark:filter transition-all duration-200"
           />
-          <div className="absolute -top-4 -right-4 w-6 h-6 bg-sukku rounded-full text-white text-sm flex items-center justify-center">
+          <div className="absolute -top-2 -right-2 w-5 h-5 bg-sukku rounded-full text-white text-xs flex items-center justify-center font-bold">
             {counter}
           </div>
         </div>
