@@ -19,7 +19,7 @@ type CartState = {
   calculateSubtotal: () => string;
 };
 
-export const useCartStore = create<CartState>((set) => ({
+export const useCartStore = create<CartState>((set, get) => ({
   cart: {} as currentCart.Cart,
   isLoading: true,
   counter: 0,
@@ -184,7 +184,7 @@ export const useCartStore = create<CartState>((set) => ({
   updateItemQuantity: async (wixClient, itemId, newQuantity) => {
     if (newQuantity <= 0) {
       // If quantity is 0 or negative, remove the item instead
-      return useCartStore.getState().removeItem(wixClient, itemId);
+      return get().removeItem(wixClient, itemId);
     }
 
     set((state) => ({ ...state, isLoading: true }));
@@ -207,7 +207,7 @@ export const useCartStore = create<CartState>((set) => ({
   },
   calculateSubtotal: (): string => {
     // Use get() to access current state without TypeScript issues
-    const { cart } = useCartStore.getState();
+    const { cart } = get();
     
     if (!cart?.lineItems || cart.lineItems.length === 0) {
       return "0.00";
