@@ -27,7 +27,7 @@ const CartModal = () => {
 
       console.log("Checkout data:", checkoutData);
 
-      const checkoutId = checkoutData?._id;
+      const checkoutId = checkoutData?.checkoutId || (checkoutData as any)?._id;
       if (!checkoutId) {
         throw new Error("No checkout ID returned from Wix currentCart");
       }
@@ -59,9 +59,9 @@ const CartModal = () => {
         console.log("Attempting fallback checkout URL:", fallbackUrl);
         window.location.href = fallbackUrl;
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Checkout error:", err);
-      alert("Checkout failed. Please try again.");
+      alert(`Checkout failed: ${err?.message || "Please try again"}`);
     }
   };
 

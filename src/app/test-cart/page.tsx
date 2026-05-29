@@ -27,7 +27,7 @@ const CartPage = () => {
 
       console.log("Checkout data:", checkoutData);
 
-      const checkoutId = checkoutData?._id;
+      const checkoutId = checkoutData?.checkoutId || (checkoutData as any)?._id;
       if (!checkoutId) {
         throw new Error("No checkout ID returned from Wix currentCart");
       }
@@ -59,9 +59,9 @@ const CartPage = () => {
         console.log("Attempting fallback checkout URL:", fallbackUrl);
         window.location.href = fallbackUrl;
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Checkout error:", err);
-      alert("Checkout failed. Please try again.");
+      alert(`Checkout failed: ${err?.message || "Please try again"}`);
     }
   };
 
@@ -99,7 +99,7 @@ const CartPage = () => {
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm">
           {/* Cart Items */}
           <div className="p-6">
-            {cart.lineItems.map((item, index) => (
+            {cart.lineItems.map((item: any, index: number) => (
               <div key={item._id} className={`flex gap-4 py-6 ${index !== cart.lineItems!.length - 1 ? 'border-b border-gray-200 dark:border-gray-700' : ''}`}>
                 {item.image && (
                   <Image
