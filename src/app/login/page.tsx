@@ -116,15 +116,6 @@ const LoginPage = () => {
             console.log("🔍 Debug - Wix client modules:", Object.keys(wixClient));
             console.log("🔍 Debug - Auth methods available:", Object.keys(wixClient.auth));
             
-            // Check if Wix provides CAPTCHA keys
-            try {
-              const invisibleSiteKey = await wixClient.auth.captchaInvisibleSiteKey();
-              const visibleSiteKey = await wixClient.auth.captchaVisibleSiteKey();
-              console.log("🔍 Wix CAPTCHA keys - Invisible:", invisibleSiteKey, "Visible:", visibleSiteKey);
-            } catch (keyError) {
-              console.log("🔍 Could not get CAPTCHA keys:", keyError);
-            }
-            
             response = await wixClient.auth.register({
               email: email.trim(),
               password,
