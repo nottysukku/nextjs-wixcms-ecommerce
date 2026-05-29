@@ -80,7 +80,7 @@ const CartModal = () => {
           {/* LIST */}
           <div className="flex flex-col gap-4 max-h-96 overflow-y-auto">
             {/* ITEM */}
-            {cart.lineItems.map((item) => (
+            {cart.lineItems.map((item: any) => (
               <div className="flex gap-4 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg" key={item._id}>
                 {item.image && (
                   <Image
