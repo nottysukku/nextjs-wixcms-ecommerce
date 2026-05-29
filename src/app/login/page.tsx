@@ -112,7 +112,6 @@ const LoginPage = () => {
           }
 
           try {
-            // First attempt: Try without CAPTCHA token
             console.log("🔍 Debug - Wix client modules:", Object.keys(wixClient));
             console.log("🔍 Debug - Auth methods available:", Object.keys(wixClient.auth));
             
@@ -123,73 +122,10 @@ const LoginPage = () => {
                 nickname: username.trim(),
               },
             });
-            console.log("✅ Registration response (without CAPTCHA):", response);
+            console.log("✅ Registration response:", response);
           } catch (captchaError: any) {
-            console.log("❌ Registration failed, full error object:", captchaError);
-            console.log("❌ Error details:", captchaError.details);
-            console.log("❌ Error message:", captchaError.message);
-            console.log("❌ Error code:", captchaError.errorCode);
-            
-            // If it's specifically a CAPTCHA error, try different approaches
-            if (captchaError.details?.errorCode === 'missingCaptchaToken' || 
-                captchaError.errorCode === 'missingCaptchaToken') {
-              console.log("🔄 Trying different CAPTCHA approaches...");
-              
-              // Try 1: Empty string
-              try {
-                console.log("🔄 Attempt 1: Empty string CAPTCHA token");
-                response = await wixClient.auth.register({
-                  email: email.trim(),
-                  password,
-                  profile: { 
-                    nickname: username.trim(),
-                  },
-                  captchaToken: "",
-                });
-                console.log("✅ Success with empty string:", response);
-              } catch (emptyError: any) {
-                console.log("❌ Empty string failed:", emptyError);
-                
-                // Try 2: Special bypass token (some Wix setups accept this)
-                try {
-                  console.log("🔄 Attempt 2: Bypass token");
-                  response = await wixClient.auth.register({
-                    email: email.trim(),
-                    password,
-                    profile: { 
-                      nickname: username.trim(),
-                    },
-                    captchaToken: "bypass-dev-token",
-                  });
-                  console.log("✅ Success with bypass token:", response);
-                } catch (bypassError: any) {
-                  console.log("❌ Bypass token failed:", bypassError);
-                  
-                  // Try 3: Get actual CAPTCHA site key and use dummy token
-                  try {
-                    console.log("🔄 Attempt 3: Getting Wix CAPTCHA site key");
-                    const siteKey = await wixClient.auth.captchaVisibleSiteKey();
-                    console.log("🔍 Got site key:", siteKey);
-                    
-                    response = await wixClient.auth.register({
-                      email: email.trim(),
-                      password,
-                      profile: { 
-                        nickname: username.trim(),
-                      },
-                      captchaToken: "test-token-" + Date.now(),
-                    });
-                    console.log("✅ Success with test token:", response);
-                  } catch (testError: any) {
-                    console.log("❌ All attempts failed. Final error:", testError);
-                    throw captchaError;
-                  }
-                }
-              }
-            } else {
-              // If it's not a CAPTCHA error, throw it
-              throw captchaError;
-            }
+            console.log("❌ Registration failed:", captchaError);
+            throw captchaError;
           }
           break;
           
